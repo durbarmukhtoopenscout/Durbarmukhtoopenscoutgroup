@@ -409,15 +409,15 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- Application Script with JSONBin Integration -->
+    <!-- Application Script with Enhanced Persistence Sync Engine -->
     <script>
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
         
-        // JSONBin Integration Keys
         const JSONBIN_BIN_ID = "6adbcd03ac6210605a4d44eb";
         const JSONBIN_MASTER_KEY = "$2a$10$iS.S1lzqxnJCTVK65quxVO6MDS7tZPWRt9eYwVINFrO0TGlmrgnJ.";
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+        const LOCAL_STORAGE_BACKUP = "DURBAR_SCOUT_LOCAL_CACHE";
 
         let defaultData = {
             logo: "https://via.placeholder.com/150?text=Logo",
@@ -444,38 +444,46 @@
 
         let appData = defaultData;
 
-        // Fetch Data from Global Cloud Database
+        // Smart Loader Logic
         async function loadData() {
+            let loadedFromCloud = false;
             try {
-                const response = await fetch(JSONBIN_URL, {
+                const response = await fetch(`${JSONBIN_URL}/latest`, {
                     method: 'GET',
                     headers: {
-                        'X-Master-Key': JSONBIN_MASTER_KEY
+                        'X-Master-Key': JSONBIN_MASTER_KEY,
+                        'X-Bin-Meta': 'false'
                     }
                 });
 
                 if (response.ok) {
                     const resData = await response.json();
-                    if (resData.record && resData.record.title) {
-                        appData = resData.record;
-                    } else {
-                        await saveData();
+                    if (resData && resData.title) {
+                        appData = resData;
+                        loadedFromCloud = true;
+                        localStorage.setItem(LOCAL_STORAGE_BACKUP, JSON.stringify(appData));
                     }
-                } else {
-                    console.warn("JSONBin Read Failed, using default dataset");
                 }
             } catch (e) {
-                console.error("Cloud Connection Error:", e);
-            } finally {
-                renderUI();
-                document.getElementById('loadingOverlay').classList.add('hidden');
+                console.warn("Cloud Read Fallback: Using cache", e);
             }
+
+            if (!loadedFromCloud) {
+                const localCache = localStorage.getItem(LOCAL_STORAGE_BACKUP);
+                if (localCache) {
+                    try { appData = JSON.parse(localCache); } catch(err){}
+                }
+            }
+
+            renderUI();
+            document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // Save Data to Global Cloud Database
+        // Smart Save Engine (Sync both Cloud & Local Cache)
         async function saveData() {
+            localStorage.setItem(LOCAL_STORAGE_BACKUP, JSON.stringify(appData));
             try {
-                const response = await fetch(JSONBIN_URL, {
+                await fetch(JSONBIN_URL, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -483,11 +491,8 @@
                     },
                     body: JSON.stringify(appData)
                 });
-                if (!response.ok) {
-                    console.error("Cloud Save Failed");
-                }
             } catch(e) {
-                console.error("Cloud Save Error:", e);
+                console.error("Cloud Save Failed", e);
             }
         }
 
@@ -511,7 +516,6 @@
             renderMembers(appData.members);
             document.getElementById('appBadge').innerText = appData.applications ? appData.applications.length : 0;
 
-            // Render Activity Gallery with Captions
             document.getElementById('galleryGrid').innerHTML = (appData.gallery || []).map(g => {
                 const imgSrc = typeof g === 'string' ? g : g.img;
                 const captionText = typeof g === 'string' ? 'অ্যাক্টিভিটি প্রোগ্রাম' : (g.caption || 'অ্যাক্টিভিটি প্রোগ্রাম');
@@ -527,7 +531,6 @@
                 `;
             }).join('');
 
-            // Render Leaders
             document.getElementById('leadersGrid').innerHTML = (appData.leaders || []).map(leader => `
                 <div class="bg-gray-50 border rounded-xl p-4 flex items-center gap-4 shadow-sm">
                     <img src="${leader.photo}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGreen">
@@ -652,7 +655,6 @@
             document.getElementById('inputNotice').value = appData.notice;
             document.getElementById('toggleNoticeShow').checked = appData.showNotice;
 
-            // Roster List
             const adminMemberList = document.getElementById('adminMemberList');
             adminMemberList.innerHTML = appData.members.map((m, idx) => `
                 <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
@@ -670,7 +672,6 @@
                 </div>
             `).join('');
 
-            // Applications
             const appList = document.getElementById('pendingAppsList');
             if (!appData.applications || appData.applications.length === 0) {
                 appList.innerHTML = `<p class="text-gray-500 text-sm italic">কোনো আবেদন নেই।</p>`;
@@ -693,7 +694,6 @@
                 `).join('');
             }
 
-            // Gallery Admin Grid
             document.getElementById('adminGalleryGrid').innerHTML = (appData.gallery || []).map((g, idx) => {
                 const imgSrc = typeof g === 'string' ? g : g.img;
                 const captionText = typeof g === 'string' ? 'ক্যাপশন নেই' : (g.caption || 'ক্যাপশন নেই');
@@ -708,7 +708,6 @@
                 `;
             }).join('');
 
-            // Leaders Admin Grid
             document.getElementById('adminLeadersList').innerHTML = (appData.leaders || []).map((l, idx) => `
                 <div class="border p-3 rounded-lg flex flex-col md:flex-row gap-3 items-center">
                     <img src="${l.photo}" class="w-12 h-12 rounded-full object-cover border">
@@ -753,7 +752,7 @@
             renderUI();
             populateAdminData();
             resetMemberForm();
-            alert("সদস্য তথ্য সফলভাবে ক্লাউডে সেভ করা হয়েছে!");
+            alert("সদস্য তথ্য সফলভাবে সেভ করা হয়েছে!");
         }
 
         function editMember(idx) {
@@ -790,7 +789,7 @@
             appData.showNotice = document.getElementById('toggleNoticeShow').checked;
             await saveData();
             renderUI();
-            alert("ব্র্যান্ডিং ক্লাউডে সেভ হয়েছে!");
+            alert("ব্র্যান্ডিং সেভ হয়েছে!");
         }
 
         async function uploadImage(input, target) {
@@ -798,7 +797,7 @@
                 appData[target] = await readFileAsBase64(input.files[0]);
                 await saveData();
                 renderUI();
-                alert("ছবি আপলোড ও সিঙ্ক সম্পন্ন!");
+                alert("ছবি আপলোড সম্পন্ন!");
             }
         }
 
@@ -823,7 +822,7 @@
 
             input.value = '';
             captionInput.value = '';
-            alert("ক্যাপশন সহ নতুন ছবি গ্যালারিতে যোগ ও লাইভ সেভ হয়েছে!");
+            alert("ক্যাপশন সহ নতুন ছবি গ্যালারিতে যোগ হয়েছে!");
         }
 
         async function removeGalleryImage(idx) {
@@ -854,7 +853,7 @@
                 await saveData();
                 renderUI();
                 populateAdminData();
-                alert("আবেদন অনুমোদন ও সদস্য তালিকায় যুক্ত হয়েছে!");
+                alert("আবেদন অনুমোদন করা হয়েছে!");
             }
         }
 
