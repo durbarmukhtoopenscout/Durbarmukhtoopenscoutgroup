@@ -35,10 +35,10 @@
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-    <!-- Loading Spinner Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center flex-col gap-3 transition-opacity duration-300">
+    <!-- Loader -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center flex-col gap-3">
         <div class="w-12 h-12 border-4 border-scoutGreen border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-scoutGreen font-semibold text-lg">দূর্বার তথ্য লোড হচ্ছে...</p>
+        <p class="text-scoutGreen font-semibold text-lg">তথ্য লোড হচ্ছে...</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -62,7 +62,7 @@
             </nav>
 
             <button onclick="toggleAdminModal()" class="bg-scoutGold hover:bg-yellow-600 text-scoutNavy px-4 py-2 rounded-lg text-sm font-bold shadow flex items-center gap-2 transition">
-                <i class="fa-solid fa-user-shield"></i> <span id="adminBtnText">অ্যাডমিন লগইন</span>
+                <i class="fa-solid fa-user-shield"></i> <span>অ্যাডমিন প্যানেল</span>
             </button>
         </div>
     </header>
@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main class="flex-grow">
         
         <!-- Hero Section -->
@@ -100,7 +100,7 @@
             </div>
         </section>
 
-        <!-- About Us Section -->
+        <!-- About Us -->
         <section id="about" class="py-12 bg-white px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
@@ -120,7 +120,7 @@
                     </div>
                     <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
                         <h4 class="font-bold text-lg text-scoutNavy mb-3 border-b pb-2"><i class="fa-solid fa-list-check text-scoutGreen mr-2"></i>৭টি স্কাউট আইন</h4>
-                        <ol id="scoutLawsList" class="space-y-2 text-sm text-gray-700 font-medium">
+                        <ol class="space-y-2 text-sm text-gray-700 font-medium">
                             <li>১. স্কাউট আত্মমর্যাদায় বিশ্বাসী।</li>
                             <li>২. স্কাউট সবার বন্ধু।</li>
                             <li>৩. স্কাউট বিনয়ী ও অনুগত।</li>
@@ -134,7 +134,7 @@
             </div>
         </section>
 
-        <!-- Member Directory Section -->
+        <!-- Member Directory -->
         <section id="members" class="py-12 bg-gray-100 px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-8">
@@ -143,19 +143,17 @@
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
 
-                <!-- Search & Filter Bar -->
-                <div class="max-w-xl mx-auto mb-8 flex gap-2">
-                    <input type="text" id="memberSearch" onkeyup="filterMembers()" placeholder="নাম বা বিএসআইডি (BSID) দিয়ে খুঁজুন..." class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:border-scoutGreen shadow-sm text-sm">
+                <div class="max-w-xl mx-auto mb-8">
+                    <input type="text" id="memberSearch" onkeyup="filterMembers()" placeholder="নাম, পদবি বা বিএসআইডি (BSID) দিয়ে খুঁজুন..." class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:border-scoutGreen shadow-sm text-sm">
                 </div>
 
-                <!-- Members Grid -->
                 <div id="memberGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Member Cards rendered dynamically -->
+                    <!-- Dynamic Members Rendered Here -->
                 </div>
             </div>
         </section>
 
-        <!-- Online Membership Form -->
+        <!-- Application Form -->
         <section id="apply" class="py-12 bg-white px-4">
             <div class="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-lg p-6 md:p-10">
                 <div class="text-center mb-8">
@@ -203,7 +201,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">নিজের ছবি (গ্যালারি থেকে সিলেক্ট করুন)</label>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">নিজের ছবি (গ্যালারি থেকে নির্বাচন করুন)</label>
                         <input type="file" id="applicantPhotoFile" accept="image/*" class="w-full text-sm text-gray-500 border border-gray-300 rounded-lg p-2">
                     </div>
 
@@ -214,7 +212,7 @@
             </div>
         </section>
 
-        <!-- Activity Gallery -->
+        <!-- Gallery -->
         <section id="gallery" class="py-12 bg-gray-50 px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-8">
@@ -222,22 +220,18 @@
                     <p class="text-gray-600 text-sm mt-1">আমাদের বিভিন্ন ক্যাম্পিং ও সমাজসেবামূলক কর্মকাণ্ডের ছবি</p>
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
-                <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <!-- Gallery Photos Rendered Dynamically -->
-                </div>
+                <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
         </section>
 
-        <!-- Contact & Leadership -->
+        <!-- Contact & Leaders -->
         <section id="contact" class="py-12 bg-white px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
-                    <h3 class="text-2xl md:text-3xl font-bold text-scoutNavy">দায়িত্বপ্রাপ্ত ব্যক্তিবর্গ ও যোগাযোগ</h3>
+                    <h3 class="text-2xl md:text-3xl font-bold text-scoutNavy">দায়িত্বপ্রাপ্ত ব্যক্তিবর্গ ও যোগাযোগ</h3>
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
-                <div id="leadersGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-                    <!-- Leaders Cards Rendered Dynamically -->
-                </div>
+                <div id="leadersGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto"></div>
             </div>
         </section>
 
@@ -247,11 +241,11 @@
     <footer class="bg-scoutNavy text-gray-300 py-8 px-4 text-center border-t border-gray-800 no-print">
         <div class="max-w-6xl mx-auto space-y-3">
             <p class="font-bold text-white text-lg">দূর্বার মুক্ত স্কাউট দল, বড়লেখা, মৌলভীবাজার</p>
-            <p class="text-xs text-gray-400">সর্বস্বত্ব সংরক্ষিত &copy; <span id="year">2026</span> | স্কাউটিং এর মাধ্যমে সুন্দর সমাজ গঠনে অঙ্গীকারবদ্ধ</p>
+            <p class="text-xs text-gray-400">সর্বস্বত্ব সংরক্ষিত &copy; 2026 | স্কাউটিং এর মাধ্যমে সুন্দর সমাজ গঠনে অঙ্গীকারবদ্ধ</p>
         </div>
     </footer>
 
-    <!-- Admin Authentication Modal -->
+    <!-- Admin Auth Modal -->
     <div id="adminAuthModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
             <button onclick="toggleAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -264,8 +258,8 @@
             </div>
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <div>
-                    <input type="password" id="adminPassword" placeholder="অ্যাডমিন পাসওয়ার্ড লিখুন" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
-                    <p id="loginError" class="text-xs text-red-500 mt-1 hidden">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
+                    <input type="password" id="adminPassword" placeholder="অ্যাডমিন পাসওয়ার্ড (durbar123)" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
+                    <p id="loginError" class="text-xs text-red-500 mt-1 hidden">ভুল পাসওয়ার্ড!</p>
                 </div>
                 <button type="submit" class="w-full bg-scoutGreen hover:bg-scoutGreenDark text-white font-bold py-2.5 rounded-lg transition">লগইন করুন</button>
             </form>
@@ -275,43 +269,41 @@
     <!-- Admin Dashboard Modal -->
     <div id="adminDashboardModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-2 md:p-6 hidden no-print">
         <div class="bg-white rounded-2xl w-full max-w-5xl h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-            <!-- Admin Topbar -->
+            
             <div class="bg-scoutNavy text-white px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-sliders text-scoutGold"></i>
-                    <h3 class="font-bold text-lg">দূর্বার কন্ট্রোল প্যানেল (CMS)</h3>
+                    <h3 class="font-bold text-lg">দূর্বার এডমিন কন্ট্রোল প্যানেল</h3>
                 </div>
                 <button onclick="closeAdminDashboard()" class="text-gray-300 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
             </div>
 
-            <!-- Admin Tabs Navigation -->
             <div class="bg-gray-100 border-b flex overflow-x-auto text-sm font-semibold">
                 <button onclick="switchAdminTab('branding')" class="adminTabBtn active px-5 py-3 border-b-2 border-scoutGreen text-scoutGreen">ব্র্যান্ডিং ও নোটিশ</button>
-                <button onclick="switchAdminTab('applications')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">আবেদনসমূহ <span id="appBadge" class="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full ml-1">0</span></button>
-                <button onclick="switchAdminTab('roster')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">সদস্য তালিকা</button>
+                <button onclick="switchAdminTab('roster')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">সদস্য তালিকা ম্যানেজ</button>
+                <button onclick="switchAdminTab('applications')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">আবেদনসমূহ (<span id="appBadge">0</span>)</button>
                 <button onclick="switchAdminTab('galleryTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">গ্যালারি পিকচার</button>
-                <button onclick="switchAdminTab('leadersTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">লিডারশিপ তথ্য</button>
+                <button onclick="switchAdminTab('leadersTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">লিডার তথ্য</button>
             </div>
 
-            <!-- Tab Contents -->
             <div class="flex-grow p-6 overflow-y-auto space-y-6">
                 
-                <!-- 1. Branding Tab -->
+                <!-- Branding Tab -->
                 <div id="brandingTab" class="tabContent space-y-4">
                     <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">ওয়েবসাইট ব্র্যান্ডিং কনফিগারেশন</h4>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">লোগো ছবি (গ্যালারি থেকে)</label>
-                            <input type="file" id="uploadLogoFile" accept="image/*" onchange="uploadImage(this, 'logo')" class="w-full text-xs text-gray-500 border rounded-lg p-2">
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">লোগো পরিবর্তন (গ্যালারি থেকে)</label>
+                            <input type="file" accept="image/*" onchange="uploadImage(this, 'logo')" class="w-full text-xs text-gray-500 border rounded-lg p-2">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">কভার ব্যানার ছবি (গ্যালারি থেকে)</label>
-                            <input type="file" id="uploadCoverFile" accept="image/*" onchange="uploadImage(this, 'heroBg')" class="w-full text-xs text-gray-500 border rounded-lg p-2">
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">কভার ব্যানার পরিবর্তন (গ্যালারি থেকে)</label>
+                            <input type="file" accept="image/*" onchange="uploadImage(this, 'heroBg')" class="w-full text-xs text-gray-500 border rounded-lg p-2">
                         </div>
                     </div>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">দলের শিরোনাম</label>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">দলের নাম</label>
                             <input type="text" id="inputHeroTitle" class="w-full border rounded-lg p-2 text-sm">
                         </div>
                         <div>
@@ -320,79 +312,97 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">বিএসআইডি নোটিশ বার লেখা</label>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">নোটিশ টেক্সট</label>
                         <input type="text" id="inputNotice" class="w-full border rounded-lg p-2 text-sm">
                         <label class="flex items-center gap-2 mt-2 text-sm">
-                            <input type="checkbox" id="toggleNoticeShow" class="rounded"> নোটিশ বার চালু রাখুন
+                            <input type="checkbox" id="toggleNoticeShow" class="rounded"> নোটিশ বার অন রাখুন
                         </label>
                     </div>
-                    <button onclick="saveBranding()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-sm shadow">সেভ করুন</button>
+                    <button onclick="saveBranding()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-sm shadow">সেভ পরিবর্তন</button>
                 </div>
 
-                <!-- 2. Applications Tab -->
+                <!-- Roster Management Tab -->
+                <div id="rosterTab" class="tabContent hidden space-y-6">
+                    <!-- Add / Edit Member Form -->
+                    <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
+                        <h5 id="memberFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-user-plus text-scoutGreen mr-2"></i>নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন</h5>
+                        <input type="hidden" id="editMemberIndex" value="-1">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">সদস্যের নাম *</label>
+                                <input type="text" id="mName" placeholder="নাম লিখুন" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">পদবি (Rank) *</label>
+                                <input type="text" id="mRank" placeholder="যেমন: স্কাউট লিডার / মেম্বার" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">বিএসআইডি (BSID)</label>
+                                <input type="text" id="mBsid" placeholder="BSID-XXXXX" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">ছবি (গ্যালারি থেকে বেছে নিন)</label>
+                            <input type="file" id="mPhotoFile" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-1.5">
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="saveMember()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs"><i class="fa-solid fa-check mr-1"></i> সেভ করুন</button>
+                            <button onclick="resetMemberForm()" class="bg-gray-400 text-white font-bold px-4 py-2 rounded-lg text-xs">রিসেট</button>
+                        </div>
+                    </div>
+
+                    <!-- Member List Table -->
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-gray-800 text-md">বর্তমান সদস্য তালিকা</h5>
+                        <div id="adminMemberList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden">
+                            <!-- Members List -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Applications Tab -->
                 <div id="applicationsTab" class="tabContent hidden space-y-4">
-                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">অনলাইন আবেদন ফরমসমূহ</h4>
-                    <div id="pendingAppsList" class="space-y-3">
-                        <!-- Pending forms list -->
-                    </div>
+                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">অনলাইন আবেদনসমূহ</h4>
+                    <div id="pendingAppsList" class="space-y-3"></div>
                 </div>
 
-                <!-- 3. Roster Tab -->
-                <div id="rosterTab" class="tabContent hidden space-y-4">
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <h4 class="font-bold text-lg text-scoutNavy">সদস্য ডিরেক্টরি পরিচালনা</h4>
-                        <button onclick="openAddMemberModal()" class="bg-scoutGreen text-white text-xs font-bold px-3 py-2 rounded-lg">+ নতুন সদস্য যোগ করুন</button>
-                    </div>
-                    <div id="adminMemberList" class="divide-y divide-gray-200">
-                        <!-- Admin members list -->
-                    </div>
-                </div>
-
-                <!-- 4. Gallery Tab -->
+                <!-- Gallery Tab -->
                 <div id="galleryTabContent" class="tabContent hidden space-y-4">
-                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">গ্যালারি ছবি যোগ করুন</h4>
+                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">গ্যালারিতে নতুন ছবি আপলোড</h4>
                     <div class="flex gap-2">
                         <input type="file" id="galleryFileInput" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-2">
                         <button onclick="addGalleryImage()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-sm shrink-0">আপলোড</button>
                     </div>
-                    <div id="adminGalleryGrid" class="grid grid-cols-3 md:grid-cols-4 gap-3 pt-4">
-                        <!-- Admin gallery list -->
-                    </div>
+                    <div id="adminGalleryGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4"></div>
                 </div>
 
-                <!-- 5. Leaders Tab -->
+                <!-- Leaders Tab -->
                 <div id="leadersTabContent" class="tabContent hidden space-y-4">
-                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">দায়িত্বপ্রাপ্ত লিডার তথ্য আপডেট</h4>
-                    <div id="adminLeadersList" class="space-y-4">
-                        <!-- Admin leaders editing forms -->
-                    </div>
+                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">প্রধান লিডারদের তথ্য ম্যানেজ</h4>
+                    <div id="adminLeadersList" class="space-y-4"></div>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- Print Form Container (Print Preview Replica) -->
+    <!-- Print Form Container -->
     <div id="printSection" class="print-only p-8 bg-white text-black">
         <div class="text-center border-b-2 border-black pb-4 mb-6">
-            <h2 id="printGroupTitle" class="text-2xl font-bold uppercase">দূর্বার মুক্ত স্কাউট দল</h2>
+            <h2 class="text-2xl font-bold uppercase">দূর্বার মুক্ত স্কাউট দল</h2>
             <p class="text-sm">বড়লেখা, মৌলভীবাজার</p>
             <h3 class="text-lg font-bold underline mt-2">সদস্য আবেদন ফরম</h3>
         </div>
-        <div id="printDetails" class="space-y-3 text-base">
-            <!-- Printed Form Data Rendered dynamically -->
-        </div>
+        <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
         const FIREBASE_REST_URL = "https://durbar-scout-default-rtdb.firebaseio.com/siteData.json";
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
 
-        // Initial State Data Template
         let appData = {
-            logo: "https://via.placeholder.com/150?text=Durbar+Logo",
+            logo: "https://via.placeholder.com/150?text=Logo",
             heroBg: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
             title: "দূর্বার মুক্ত স্কাউট দল, বড়লেখা",
             subtitle: "বড়লেখা, মৌলভীবাজার",
@@ -405,27 +415,22 @@
                 { id: 2, name: "দেবজ্যোতি দাস পদ্ম", rank: "সহকারী স্কাউট লিডার", bsid: "BSID-99202", photo: "https://via.placeholder.com/150?text=Paddo" }
             ],
             applications: [],
-            gallery: [
-                "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80"
-            ],
+            gallery: ["https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80"],
             leaders: [
                 { name: "সুলতান সাইফ নিরব", role: "স্কাউট লিডার", phone: "01700000000", photo: "https://via.placeholder.com/150?text=Nirob" },
                 { name: "দেবজ্যোতি দাস পদ্ম", role: "সহকারী স্কাউট লিডার", phone: "01800000000", photo: "https://via.placeholder.com/150?text=Paddo" }
             ]
         };
 
-        // Cloud Data Synchronization Engine
         async function loadCloudData() {
             try {
                 const res = await fetch(FIREBASE_REST_URL);
                 if (res.ok) {
                     const data = await res.json();
-                    if (data) {
-                        appData = { ...appData, ...data };
-                    }
+                    if (data) appData = { ...appData, ...data };
                 }
             } catch (err) {
-                console.warn("Using offline memory dataset", err);
+                console.warn("Cloud load fallback", err);
             } finally {
                 renderUI();
                 document.getElementById('loadingOverlay').classList.add('hidden');
@@ -440,11 +445,10 @@
                     body: JSON.stringify(appData)
                 });
             } catch (err) {
-                console.error("Cloud Sync Failed:", err);
+                console.error("Sync Error:", err);
             }
         }
 
-        // UI Renderer
         function renderUI() {
             document.getElementById('headerLogo').src = appData.logo;
             document.getElementById('headerTitle').innerText = appData.title;
@@ -454,7 +458,6 @@
             document.getElementById('heroMotto').innerText = `"${appData.motto}"`;
             document.getElementById('heroBg').style.backgroundImage = `url('${appData.heroBg}')`;
             
-            // Notice Bar
             const noticeTicker = document.getElementById('noticeTicker');
             if (appData.showNotice) {
                 noticeTicker.classList.remove('hidden');
@@ -463,23 +466,16 @@
                 noticeTicker.classList.add('hidden');
             }
 
-            // Members Directory
             renderMembers(appData.members);
-
-            // Applications Count Badge
             document.getElementById('appBadge').innerText = appData.applications ? appData.applications.length : 0;
 
-            // Gallery
-            const galleryGrid = document.getElementById('galleryGrid');
-            galleryGrid.innerHTML = (appData.gallery || []).map(img => `
-                <div class="h-48 rounded-xl overflow-hidden shadow border">
+            document.getElementById('galleryGrid').innerHTML = (appData.gallery || []).map(img => `
+                <div class="h-48 rounded-xl overflow-hidden shadow border bg-white">
                     <img src="${img}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
                 </div>
             `).join('');
 
-            // Leaders
-            const leadersGrid = document.getElementById('leadersGrid');
-            leadersGrid.innerHTML = (appData.leaders || []).map(leader => `
+            document.getElementById('leadersGrid').innerHTML = (appData.leaders || []).map(leader => `
                 <div class="bg-gray-50 border rounded-xl p-4 flex items-center gap-4 shadow-sm">
                     <img src="${leader.photo}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGreen">
                     <div>
@@ -494,9 +490,8 @@
             `).join('');
         }
 
-        function renderMembers(membersList) {
-            const memberGrid = document.getElementById('memberGrid');
-            memberGrid.innerHTML = membersList.map(m => `
+        function renderMembers(list) {
+            document.getElementById('memberGrid').innerHTML = list.map(m => `
                 <div class="bg-white border rounded-xl p-4 shadow-sm flex items-center gap-4 hover:shadow-md transition">
                     <img src="${m.photo || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGold">
                     <div>
@@ -511,22 +506,23 @@
         function filterMembers() {
             const query = document.getElementById('memberSearch').value.toLowerCase();
             const filtered = appData.members.filter(m => 
-                m.name.toLowerCase().includes(query) || (m.bsid && m.bsid.toLowerCase().includes(query))
+                m.name.toLowerCase().includes(query) || 
+                m.rank.toLowerCase().includes(query) || 
+                (m.bsid && m.bsid.toLowerCase().includes(query))
             );
             renderMembers(filtered);
         }
 
-        // Online Form Submission Engine (Web3Forms + Local State Sync)
         async function submitApplication(e) {
             e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerText = "প্রসেস হচ্ছে...";
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "প্রসেস হচ্ছে...";
 
             const fileInput = document.getElementById('applicantPhotoFile');
-            let photoBase64 = "https://via.placeholder.com/150";
+            let photo = "https://via.placeholder.com/150";
             if (fileInput.files.length > 0) {
-                photoBase64 = await readFileAsBase64(fileInput.files[0]);
+                photo = await readFileAsBase64(fileInput.files[0]);
             }
 
             const appPayload = {
@@ -538,11 +534,10 @@
                 dob: document.getElementById('applicantDob').value,
                 institute: document.getElementById('applicantInstitute').value,
                 address: document.getElementById('applicantAddress').value,
-                photo: photoBase64,
+                photo: photo,
                 date: new Date().toLocaleDateString('bn-BD')
             };
 
-            // 1. Web3Forms Email Dispatch
             try {
                 await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
@@ -550,43 +545,28 @@
                     body: JSON.stringify({
                         access_key: WEB3FORMS_KEY,
                         subject: `নতুন স্কাউট আবেদন: ${appPayload.name}`,
-                        message: `
-                            নতুন সদস্য আবেদন জমা হয়েছে:
-                            নাম: ${appPayload.name}
-                            ফোন: ${appPayload.phone}
-                            পিতা: ${appPayload.father}
-                            মাতা: ${appPayload.mother}
-                            জন্ম তারিখ: ${appPayload.dob}
-                            প্রতিষ্ঠান/পেশা: ${appPayload.institute}
-                            ঠিকানা: ${appPayload.address}
-                        `
+                        message: `নাম: ${appPayload.name}, ফোন: ${appPayload.phone}, ঠিকানা: ${appPayload.address}`
                     })
                 });
-            } catch (err) {
-                console.warn("Web3Forms Email Notification Error:", err);
-            }
+            } catch (err) {}
 
-            // 2. Cloud State Persist
             if (!appData.applications) appData.applications = [];
             appData.applications.push(appPayload);
             await syncCloudData();
 
-            alert("আপনার আবেদনটি সফলভাবে জমা হয়েছে! কর্তৃপক্ষ শীঘ্রই যোগাযোগ করবে।");
+            alert("আপনার আবেদন জমা হয়েছে!");
             document.getElementById('membershipForm').reset();
-            submitBtn.disabled = false;
-            submitBtn.innerText = "আবেদন জমা দিন";
+            btn.disabled = false;
+            btn.innerText = "আবেদন জমা দিন";
             renderUI();
         }
 
-        // Admin Auth Engine
-        function toggleAdminModal() {
-            document.getElementById('adminAuthModal').classList.toggle('hidden');
-        }
+        // Admin Auth
+        function toggleAdminModal() { document.getElementById('adminAuthModal').classList.toggle('hidden'); }
 
         function handleAdminLogin(e) {
             e.preventDefault();
-            const pass = document.getElementById('adminPassword').value;
-            if (pass === ADMIN_PASS) {
+            if (document.getElementById('adminPassword').value === ADMIN_PASS) {
                 document.getElementById('adminAuthModal').classList.add('hidden');
                 document.getElementById('adminPassword').value = '';
                 document.getElementById('loginError').classList.add('hidden');
@@ -601,19 +581,17 @@
             populateAdminData();
         }
 
-        function closeAdminDashboard() {
-            document.getElementById('adminDashboardModal').classList.add('hidden');
-        }
+        function closeAdminDashboard() { document.getElementById('adminDashboardModal').classList.add('hidden'); }
 
-        function switchAdminTab(tabName) {
+        function switchAdminTab(tab) {
             document.querySelectorAll('.tabContent').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.adminTabBtn').forEach(el => el.classList.remove('active', 'border-b-2', 'border-scoutGreen', 'text-scoutGreen'));
 
-            if (tabName === 'branding') document.getElementById('brandingTab').classList.remove('hidden');
-            if (tabName === 'applications') document.getElementById('applicationsTab').classList.remove('hidden');
-            if (tabName === 'roster') document.getElementById('rosterTab').classList.remove('hidden');
-            if (tabName === 'galleryTab') document.getElementById('galleryTabContent').classList.remove('hidden');
-            if (tabName === 'leadersTab') document.getElementById('leadersTabContent').classList.remove('hidden');
+            if (tab === 'branding') document.getElementById('brandingTab').classList.remove('hidden');
+            if (tab === 'roster') document.getElementById('rosterTab').classList.remove('hidden');
+            if (tab === 'applications') document.getElementById('applicationsTab').classList.remove('hidden');
+            if (tab === 'galleryTab') document.getElementById('galleryTabContent').classList.remove('hidden');
+            if (tab === 'leadersTab') document.getElementById('leadersTabContent').classList.remove('hidden');
         }
 
         function populateAdminData() {
@@ -622,10 +600,28 @@
             document.getElementById('inputNotice').value = appData.notice;
             document.getElementById('toggleNoticeShow').checked = appData.showNotice;
 
-            // Render Pending Applications
+            // Roster CRUD Render
+            const adminMemberList = document.getElementById('adminMemberList');
+            adminMemberList.innerHTML = appData.members.map((m, idx) => `
+                <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <img src="${m.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">${m.name}</p>
+                            <p class="text-xs text-scoutGreen font-semibold">${m.rank} | ${m.bsid || 'BSID নেই'}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editMember(${idx})" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
+                        <button onclick="removeMember(${idx})" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Applications Render
             const appList = document.getElementById('pendingAppsList');
             if (!appData.applications || appData.applications.length === 0) {
-                appList.innerHTML = `<p class="text-gray-500 text-sm italic">কোনো আবেদন অপেক্ষমাণ নেই।</p>`;
+                appList.innerHTML = `<p class="text-gray-500 text-sm italic">কোনো আবেদন নেই।</p>`;
             } else {
                 appList.innerHTML = appData.applications.map((app, idx) => `
                     <div class="border rounded-xl p-4 bg-gray-50 flex flex-col md:flex-row justify-between gap-4">
@@ -634,34 +630,102 @@
                             <div class="text-sm">
                                 <h5 class="font-bold text-gray-800">${app.name} (${app.phone})</h5>
                                 <p class="text-xs text-gray-600">পিতা: ${app.father} | মাতা: ${app.mother}</p>
-                                <p class="text-xs text-gray-600">প্রতিষ্ঠান: ${app.institute} | তারিখ: ${app.date}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="approveApplication(${idx})" class="bg-scoutGreen text-white text-xs px-3 py-1.5 rounded font-bold">Approve</button>
-                            <button onclick="printForm(${idx})" class="bg-scoutNavy text-white text-xs px-3 py-1.5 rounded font-bold">A4 Print</button>
+                            <button onclick="approveApp(${idx})" class="bg-scoutGreen text-white text-xs px-3 py-1.5 rounded font-bold">Approve</button>
+                            <button onclick="printForm(${idx})" class="bg-scoutNavy text-white text-xs px-3 py-1.5 rounded font-bold">Print</button>
                             <button onclick="deleteApp(${idx})" class="bg-red-600 text-white text-xs px-3 py-1.5 rounded font-bold">Delete</button>
                         </div>
                     </div>
                 `).join('');
             }
 
-            // Render Roster Admin
-            const memberList = document.getElementById('adminMemberList');
-            memberList.innerHTML = appData.members.map((m, idx) => `
-                <div class="py-2 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <img src="${m.photo}" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <p class="font-bold text-sm text-gray-800">${m.name}</p>
-                            <p class="text-xs text-gray-500">${m.rank} | ${m.bsid || 'BSID নেই'}</p>
-                        </div>
+            // Admin Gallery Render
+            document.getElementById('adminGalleryGrid').innerHTML = (appData.gallery || []).map((img, idx) => `
+                <div class="relative rounded overflow-hidden border h-24">
+                    <img src="${img}" class="w-full h-full object-cover">
+                    <button onclick="removeGalleryImage(${idx})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center shadow"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            `).join('');
+
+            // Admin Leaders Render
+            document.getElementById('adminLeadersList').innerHTML = (appData.leaders || []).map((l, idx) => `
+                <div class="border p-3 rounded-lg flex flex-col md:flex-row gap-3 items-center">
+                    <img src="${l.photo}" class="w-12 h-12 rounded-full object-cover border">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 w-full">
+                        <input type="text" value="${l.name}" onchange="updateLeader(${idx}, 'name', this.value)" class="border p-1.5 rounded text-xs" placeholder="নাম">
+                        <input type="text" value="${l.role}" onchange="updateLeader(${idx}, 'role', this.value)" class="border p-1.5 rounded text-xs" placeholder="পদবি">
+                        <input type="text" value="${l.phone}" onchange="updateLeader(${idx}, 'phone', this.value)" class="border p-1.5 rounded text-xs" placeholder="ফোন">
                     </div>
-                    <button onclick="removeMember(${idx})" class="text-red-500 hover:text-red-700 text-xs font-bold"><i class="fa-solid fa-trash"></i> ডিলিট</button>
                 </div>
             `).join('');
         }
 
+        // Member Roster Operations (Add / Edit / Save)
+        async function saveMember() {
+            const idx = parseInt(document.getElementById('editMemberIndex').value);
+            const name = document.getElementById('mName').value.trim();
+            const rank = document.getElementById('mRank').value.trim();
+            const bsid = document.getElementById('mBsid').value.trim();
+            const photoFile = document.getElementById('mPhotoFile').files;
+
+            if (!name || !rank) {
+                alert("দয়া করে মেম্বারের নাম এবং পদবি লিখুন!");
+                return;
+            }
+
+            let photo = idx >= 0 ? appData.members[idx].photo : "https://via.placeholder.com/150";
+            if (photoFile.length > 0) {
+                photo = await readFileAsBase64(photoFile[0]);
+            }
+
+            const memberObj = {
+                id: idx >= 0 ? appData.members[idx].id : Date.now(),
+                name, rank, bsid, photo
+            };
+
+            if (idx >= 0) {
+                appData.members[idx] = memberObj;
+            } else {
+                appData.members.push(memberObj);
+            }
+
+            await syncCloudData();
+            renderUI();
+            populateAdminData();
+            resetMemberForm();
+            alert("সদস্য তথ্য সফলভাবে সংরক্ষণ করা হয়েছে!");
+        }
+
+        function editMember(idx) {
+            const m = appData.members[idx];
+            document.getElementById('editMemberIndex').value = idx;
+            document.getElementById('mName').value = m.name;
+            document.getElementById('mRank').value = m.rank;
+            document.getElementById('mBsid').value = m.bsid || '';
+            document.getElementById('memberFormTitle').innerText = "মেম্বারের তথ্য আপডেট করুন (" + m.name + ")";
+        }
+
+        function resetMemberForm() {
+            document.getElementById('editMemberIndex').value = "-1";
+            document.getElementById('mName').value = "";
+            document.getElementById('mRank').value = "";
+            document.getElementById('mBsid').value = "";
+            document.getElementById('mPhotoFile').value = "";
+            document.getElementById('memberFormTitle').innerText = "নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন";
+        }
+
+        async function removeMember(idx) {
+            if (confirm("এই সদস্যকে মেম্বার তালিকা থেকে বাদ দিতে চান?")) {
+                appData.members.splice(idx, 1);
+                await syncCloudData();
+                renderUI();
+                populateAdminData();
+            }
+        }
+
+        // Branding
         async function saveBranding() {
             appData.title = document.getElementById('inputHeroTitle').value;
             appData.motto = document.getElementById('inputMotto').value;
@@ -669,36 +733,51 @@
             appData.showNotice = document.getElementById('toggleNoticeShow').checked;
             await syncCloudData();
             renderUI();
-            alert("ব্র্যান্ডিং তথ্য সংরক্ষিত হয়েছে!");
+            alert("ব্র্যান্ডিং সেভ হয়েছে!");
         }
 
-        async function uploadImage(input, targetKey) {
+        async function uploadImage(input, target) {
             if (input.files.length > 0) {
-                const base64 = await readFileAsBase64(input.files[0]);
-                appData[targetKey] = base64;
+                appData[target] = await readFileAsBase64(input.files[0]);
                 await syncCloudData();
                 renderUI();
-                alert("ছবি সফলভাবে আপলোড হয়েছে!");
+                alert("ছবি আপলোড সম্পন্ন!");
             }
         }
 
+        // Gallery Operations
         async function addGalleryImage() {
             const input = document.getElementById('galleryFileInput');
             if (input.files.length > 0) {
-                const base64 = await readFileAsBase64(input.files[0]);
+                const img = await readFileAsBase64(input.files[0]);
                 if (!appData.gallery) appData.gallery = [];
-                appData.gallery.push(base64);
+                appData.gallery.push(img);
                 await syncCloudData();
                 renderUI();
                 populateAdminData();
                 input.value = '';
-                alert("গ্যালারি ছবি আপলোড হয়েছে!");
+                alert("গ্যালারিতে নতুন ছবি যোগ হয়েছে!");
             }
         }
 
-        async function approveApplication(idx) {
+        async function removeGalleryImage(idx) {
+            appData.gallery.splice(idx, 1);
+            await syncCloudData();
+            renderUI();
+            populateAdminData();
+        }
+
+        // Leaders Operation
+        async function updateLeader(idx, field, val) {
+            appData.leaders[idx][field] = val;
+            await syncCloudData();
+            renderUI();
+        }
+
+        // App Approval
+        async function approveApp(idx) {
             const app = appData.applications[idx];
-            const bsid = prompt("সদস্যের জন্য বিএসআইডি (BSID) দিন:", "BSID-" + Math.floor(10000 + Math.random() * 90000));
+            const bsid = prompt("বিএসআইডি (BSID) নির্ধারণ করুন:", "BSID-" + Math.floor(10000 + Math.random() * 90000));
             if (bsid) {
                 appData.members.push({
                     id: Date.now(),
@@ -711,22 +790,13 @@
                 await syncCloudData();
                 renderUI();
                 populateAdminData();
-                alert("সদস্য পদ সফলভাবে অনুমোদিত হয়েছে!");
+                alert("আবেদন অনুমোদন করা হয়েছে!");
             }
         }
 
         async function deleteApp(idx) {
-            if (confirm("আবেদনটি মুছে ফেলতে চান?")) {
+            if (confirm("আবেদনটি ডিলিট করবেন?")) {
                 appData.applications.splice(idx, 1);
-                await syncCloudData();
-                renderUI();
-                populateAdminData();
-            }
-        }
-
-        async function removeMember(idx) {
-            if (confirm("সদস্যটি বাদ দিতে চান?")) {
-                appData.members.splice(idx, 1);
                 await syncCloudData();
                 renderUI();
                 populateAdminData();
@@ -737,20 +807,15 @@
             const app = appData.applications[idx];
             document.getElementById('printDetails').innerHTML = `
                 <div class="flex justify-between items-start mb-6">
-                    <div class="space-y-1">
-                        <p><strong>আবেদনকারীর নাম:</strong> ${app.name}</p>
-                        <p><strong>মোবাইল নম্বর:</strong> ${app.phone}</p>
-                        <p><strong>পিতার নাম:</strong> ${app.father}</p>
-                        <p><strong>মাতার নাম:</strong> ${app.mother}</p>
+                    <div>
+                        <p><strong>আবেদনকারী:</strong> ${app.name}</p>
+                        <p><strong>ফোন:</strong> ${app.phone}</p>
+                        <p><strong>পিতা:</strong> ${app.father}</p>
+                        <p><strong>মাতা:</strong> ${app.mother}</p>
                         <p><strong>জন্ম তারিখ:</strong> ${app.dob}</p>
-                        <p><strong>শিক্ষাপ্রতিষ্ঠান/পেশা:</strong> ${app.institute}</p>
                         <p><strong>ঠিকানা:</strong> ${app.address}</p>
                     </div>
-                    <img src="${app.photo}" class="w-32 h-32 object-cover border-2 border-black">
-                </div>
-                <div class="mt-20 flex justify-between text-center font-bold">
-                    <div class="border-t border-black pt-1 w-40">আবেদনকারীর স্বাক্ষর</div>
-                    <div class="border-t border-black pt-1 w-40">স্কাউট লিডারের স্বাক্ষর</div>
+                    <img src="${app.photo}" class="w-32 h-32 border">
                 </div>
             `;
             window.print();
@@ -765,7 +830,6 @@
             });
         }
 
-        // Initialize application on page load
         window.onload = loadCloudData;
     </script>
 </body>
