@@ -31,14 +31,19 @@
             body { background: white; color: black; }
         }
         .print-only { display: none; }
+        .tabContent { animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-    <!-- Loader -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center flex-col gap-3">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center flex-col gap-3 transition-opacity">
         <div class="w-12 h-12 border-4 border-scoutGreen border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-scoutGreen font-semibold text-lg">তথ্য লোড হচ্ছে...</p>
+        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ওয়েবসাইটের তথ্য লোড হচ্ছে...</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -57,12 +62,12 @@
                 <a href="#about" class="hover:text-scoutGold transition">আমাদের সম্পর্কে</a>
                 <a href="#members" class="hover:text-scoutGold transition">সদস্যবৃন্দ</a>
                 <a href="#apply" class="hover:text-scoutGold transition">আবেদন করুন</a>
-                <a href="#gallery" class="hover:text-scoutGold transition">গ্যালারি</a>
+                <a href="#gallery" class="hover:text-scoutGold transition">অ্যাক্টিভিটি গ্যালারি</a>
                 <a href="#contact" class="hover:text-scoutGold transition">যোগাযোগ</a>
             </nav>
 
             <button onclick="toggleAdminModal()" class="bg-scoutGold hover:bg-yellow-600 text-scoutNavy px-4 py-2 rounded-lg text-sm font-bold shadow flex items-center gap-2 transition">
-                <i class="fa-solid fa-user-shield"></i> <span>অ্যাডমিন প্যানেল</span>
+                <i class="fa-solid fa-user-shield"></i> <span id="adminBtnText">অ্যাডমিন প্যানেল</span>
             </button>
         </div>
     </header>
@@ -100,7 +105,7 @@
             </div>
         </section>
 
-        <!-- About Us -->
+        <!-- About Us Section -->
         <section id="about" class="py-12 bg-white px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
@@ -134,7 +139,7 @@
             </div>
         </section>
 
-        <!-- Member Directory -->
+        <!-- Member Directory Section -->
         <section id="members" class="py-12 bg-gray-100 px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-8">
@@ -143,17 +148,17 @@
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
 
+                <!-- Search Filter Bar -->
                 <div class="max-w-xl mx-auto mb-8">
                     <input type="text" id="memberSearch" onkeyup="filterMembers()" placeholder="নাম, পদবি বা বিএসআইডি (BSID) দিয়ে খুঁজুন..." class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:border-scoutGreen shadow-sm text-sm">
                 </div>
 
-                <div id="memberGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Dynamic Members Rendered Here -->
-                </div>
+                <!-- Members Grid -->
+                <div id="memberGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
         </section>
 
-        <!-- Application Form -->
+        <!-- Online Membership Form -->
         <section id="apply" class="py-12 bg-white px-4">
             <div class="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-lg p-6 md:p-10">
                 <div class="text-center mb-8">
@@ -212,19 +217,19 @@
             </div>
         </section>
 
-        <!-- Gallery -->
+        <!-- Activity Gallery with Captions -->
         <section id="gallery" class="py-12 bg-gray-50 px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl md:text-3xl font-bold text-scoutGreen">অ্যাক্টিভিটি গ্যালারি</h3>
-                    <p class="text-gray-600 text-sm mt-1">আমাদের বিভিন্ন ক্যাম্পিং ও সমাজসেবামূলক কর্মকাণ্ডের ছবি</p>
+                    <p class="text-gray-600 text-sm mt-1">আমাদের বিভিন্ন ক্যাম্পিং, সমাজসেবা ও প্রশিক্ষণ কর্মসূচির ছবি</p>
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
-                <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+                <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
             </div>
         </section>
 
-        <!-- Contact & Leaders -->
+        <!-- Contact & Leadership -->
         <section id="contact" class="py-12 bg-white px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
@@ -245,7 +250,7 @@
         </div>
     </footer>
 
-    <!-- Admin Auth Modal -->
+    <!-- Admin Authentication Modal -->
     <div id="adminAuthModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
             <button onclick="toggleAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -266,29 +271,30 @@
         </div>
     </div>
 
-    <!-- Admin Dashboard Modal -->
+    <!-- Admin Dashboard CMS Modal -->
     <div id="adminDashboardModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-2 md:p-6 hidden no-print">
         <div class="bg-white rounded-2xl w-full max-w-5xl h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             
             <div class="bg-scoutNavy text-white px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-sliders text-scoutGold"></i>
-                    <h3 class="font-bold text-lg">দূর্বার এডমিন কন্ট্রোল প্যানেল</h3>
+                    <h3 class="font-bold text-lg">দূর্বার এডমিন কন্ট্রোল প্যানেল (CMS)</h3>
                 </div>
                 <button onclick="closeAdminDashboard()" class="text-gray-300 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
             </div>
 
+            <!-- Admin Navigation Tabs -->
             <div class="bg-gray-100 border-b flex overflow-x-auto text-sm font-semibold">
                 <button onclick="switchAdminTab('branding')" class="adminTabBtn active px-5 py-3 border-b-2 border-scoutGreen text-scoutGreen">ব্র্যান্ডিং ও নোটিশ</button>
-                <button onclick="switchAdminTab('roster')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">সদস্য তালিকা ম্যানেজ</button>
+                <button onclick="switchAdminTab('roster')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">মেম্বারশিপ পরিচালনা</button>
                 <button onclick="switchAdminTab('applications')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">আবেদনসমূহ (<span id="appBadge">0</span>)</button>
-                <button onclick="switchAdminTab('galleryTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">গ্যালারি পিকচার</button>
+                <button onclick="switchAdminTab('galleryTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">অ্যাক্টিভিটি গ্যালারি (ক্যাপশনসহ)</button>
                 <button onclick="switchAdminTab('leadersTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">লিডার তথ্য</button>
             </div>
 
             <div class="flex-grow p-6 overflow-y-auto space-y-6">
                 
-                <!-- Branding Tab -->
+                <!-- 1. Branding Tab -->
                 <div id="brandingTab" class="tabContent space-y-4">
                     <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">ওয়েবসাইট ব্র্যান্ডিং কনফিগারেশন</h4>
                     <div class="grid md:grid-cols-2 gap-4">
@@ -321,9 +327,8 @@
                     <button onclick="saveBranding()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-sm shadow">সেভ পরিবর্তন</button>
                 </div>
 
-                <!-- Roster Management Tab -->
+                <!-- 2. Roster Management Tab -->
                 <div id="rosterTab" class="tabContent hidden space-y-6">
-                    <!-- Add / Edit Member Form -->
                     <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
                         <h5 id="memberFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-user-plus text-scoutGreen mr-2"></i>নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন</h5>
                         <input type="hidden" id="editMemberIndex" value="-1">
@@ -351,32 +356,42 @@
                         </div>
                     </div>
 
-                    <!-- Member List Table -->
                     <div class="space-y-2">
                         <h5 class="font-bold text-gray-800 text-md">বর্তমান সদস্য তালিকা</h5>
-                        <div id="adminMemberList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden">
-                            <!-- Members List -->
-                        </div>
+                        <div id="adminMemberList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden"></div>
                     </div>
                 </div>
 
-                <!-- Applications Tab -->
+                <!-- 3. Applications Tab -->
                 <div id="applicationsTab" class="tabContent hidden space-y-4">
                     <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">অনলাইন আবেদনসমূহ</h4>
                     <div id="pendingAppsList" class="space-y-3"></div>
                 </div>
 
-                <!-- Gallery Tab -->
+                <!-- 4. Activity Gallery with Captions Tab -->
                 <div id="galleryTabContent" class="tabContent hidden space-y-4">
-                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">গ্যালারিতে নতুন ছবি আপলোড</h4>
-                    <div class="flex gap-2">
-                        <input type="file" id="galleryFileInput" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-2">
-                        <button onclick="addGalleryImage()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-sm shrink-0">আপলোড</button>
+                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">অ্যাক্টিভিটি গ্যালারি পিকচার আপলোড (ক্যাপশনসহ)</h4>
+                    <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ছবি নির্বাচন করুন (গ্যালারি থেকে) *</label>
+                                <input type="file" id="galleryFileInput" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-2 bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">অ্যাক্টিভিটির ক্যাপশন (শিরোনাম) *</label>
+                                <input type="text" id="galleryCaptionInput" placeholder="যেমন: বার্ষিক স্কাউট ক্যাম্পুরি ২০২৬" class="w-full border rounded-lg p-2 text-sm bg-white">
+                            </div>
+                        </div>
+                        <button onclick="addGalleryImage()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-xs flex items-center gap-1">
+                            <i class="fa-solid fa-upload"></i> গ্যালারিতে যোগ করুন
+                        </button>
                     </div>
-                    <div id="adminGalleryGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4"></div>
+
+                    <h5 class="font-bold text-gray-800 text-md pt-2">বর্তমান গ্যালারি ছবিসমূহ</h5>
+                    <div id="adminGalleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
                 </div>
 
-                <!-- Leaders Tab -->
+                <!-- 5. Leaders Tab -->
                 <div id="leadersTabContent" class="tabContent hidden space-y-4">
                     <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">প্রধান লিডারদের তথ্য ম্যানেজ</h4>
                     <div id="adminLeadersList" class="space-y-4"></div>
@@ -396,12 +411,13 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
+    <!-- Application Script -->
     <script>
-        const FIREBASE_REST_URL = "https://durbar-scout-default-rtdb.firebaseio.com/siteData.json";
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
+        const STORAGE_KEY = "DURBAR_SCOUT_FULL_APP_DATA";
 
-        let appData = {
+        let defaultData = {
             logo: "https://via.placeholder.com/150?text=Logo",
             heroBg: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
             title: "দূর্বার মুক্ত স্কাউট দল, বড়লেখা",
@@ -415,37 +431,37 @@
                 { id: 2, name: "দেবজ্যোতি দাস পদ্ম", rank: "সহকারী স্কাউট লিডার", bsid: "BSID-99202", photo: "https://via.placeholder.com/150?text=Paddo" }
             ],
             applications: [],
-            gallery: ["https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80"],
+            gallery: [
+                { img: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80", caption: "বার্ষিক স্কাউট তাবু বাস ও ক্যাম্পিং" }
+            ],
             leaders: [
                 { name: "সুলতান সাইফ নিরব", role: "স্কাউট লিডার", phone: "01700000000", photo: "https://via.placeholder.com/150?text=Nirob" },
                 { name: "দেবজ্যোতি দাস পদ্ম", role: "সহকারী স্কাউট লিডার", phone: "01800000000", photo: "https://via.placeholder.com/150?text=Paddo" }
             ]
         };
 
-        async function loadCloudData() {
+        let appData = defaultData;
+
+        function loadData() {
             try {
-                const res = await fetch(FIREBASE_REST_URL);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data) appData = { ...appData, ...data };
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    appData = JSON.parse(saved);
+                } else {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
                 }
-            } catch (err) {
-                console.warn("Cloud load fallback", err);
-            } finally {
-                renderUI();
-                document.getElementById('loadingOverlay').classList.add('hidden');
+            } catch (e) {
+                appData = defaultData;
             }
+            renderUI();
+            document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        async function syncCloudData() {
+        function saveData() {
             try {
-                await fetch(FIREBASE_REST_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(appData)
-                });
-            } catch (err) {
-                console.error("Sync Error:", err);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            } catch(e) {
+                console.error("Storage Save Failed", e);
             }
         }
 
@@ -469,12 +485,23 @@
             renderMembers(appData.members);
             document.getElementById('appBadge').innerText = appData.applications ? appData.applications.length : 0;
 
-            document.getElementById('galleryGrid').innerHTML = (appData.gallery || []).map(img => `
-                <div class="h-48 rounded-xl overflow-hidden shadow border bg-white">
-                    <img src="${img}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
-                </div>
-            `).join('');
+            // Render Activity Gallery with Captions
+            document.getElementById('galleryGrid').innerHTML = (appData.gallery || []).map(g => {
+                const imgSrc = typeof g === 'string' ? g : g.img;
+                const captionText = typeof g === 'string' ? 'অ্যাক্টিভিটি প্রোগ্রাম' : (g.caption || 'অ্যাক্টিভিটি প্রোগ্রাম');
+                return `
+                    <div class="relative group rounded-2xl overflow-hidden shadow-md border bg-white h-64">
+                        <img src="${imgSrc}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
+                            <p class="text-white font-bold text-sm leading-tight flex items-center gap-1.5">
+                                <i class="fa-solid fa-camera text-scoutGold"></i> ${captionText}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
+            // Render Leaders
             document.getElementById('leadersGrid').innerHTML = (appData.leaders || []).map(leader => `
                 <div class="bg-gray-50 border rounded-xl p-4 flex items-center gap-4 shadow-sm">
                     <img src="${leader.photo}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGreen">
@@ -552,16 +579,15 @@
 
             if (!appData.applications) appData.applications = [];
             appData.applications.push(appPayload);
-            await syncCloudData();
+            saveData();
 
-            alert("আপনার আবেদন জমা হয়েছে!");
+            alert("আপনার আবেদনটি সফলভাবে জমা হয়েছে!");
             document.getElementById('membershipForm').reset();
             btn.disabled = false;
             btn.innerText = "আবেদন জমা দিন";
             renderUI();
         }
 
-        // Admin Auth
         function toggleAdminModal() { document.getElementById('adminAuthModal').classList.toggle('hidden'); }
 
         function handleAdminLogin(e) {
@@ -600,7 +626,7 @@
             document.getElementById('inputNotice').value = appData.notice;
             document.getElementById('toggleNoticeShow').checked = appData.showNotice;
 
-            // Roster CRUD Render
+            // Roster List
             const adminMemberList = document.getElementById('adminMemberList');
             adminMemberList.innerHTML = appData.members.map((m, idx) => `
                 <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
@@ -618,7 +644,7 @@
                 </div>
             `).join('');
 
-            // Applications Render
+            // Applications
             const appList = document.getElementById('pendingAppsList');
             if (!appData.applications || appData.applications.length === 0) {
                 appList.innerHTML = `<p class="text-gray-500 text-sm italic">কোনো আবেদন নেই।</p>`;
@@ -641,15 +667,22 @@
                 `).join('');
             }
 
-            // Admin Gallery Render
-            document.getElementById('adminGalleryGrid').innerHTML = (appData.gallery || []).map((img, idx) => `
-                <div class="relative rounded overflow-hidden border h-24">
-                    <img src="${img}" class="w-full h-full object-cover">
-                    <button onclick="removeGalleryImage(${idx})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center shadow"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-            `).join('');
+            // Gallery Admin Grid
+            document.getElementById('adminGalleryGrid').innerHTML = (appData.gallery || []).map((g, idx) => {
+                const imgSrc = typeof g === 'string' ? g : g.img;
+                const captionText = typeof g === 'string' ? 'ক্যাপশন নেই' : (g.caption || 'ক্যাপশন নেই');
+                return `
+                    <div class="relative rounded-xl overflow-hidden border bg-white shadow-sm flex flex-col">
+                        <img src="${imgSrc}" class="w-full h-32 object-cover">
+                        <div class="p-2 flex-grow flex items-center justify-between bg-gray-50">
+                            <p class="text-xs font-semibold text-gray-700 truncate">${captionText}</p>
+                            <button onclick="removeGalleryImage(${idx})" class="text-red-600 hover:text-red-800 text-xs font-bold shrink-0 ml-1"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
-            // Admin Leaders Render
+            // Leaders Admin Grid
             document.getElementById('adminLeadersList').innerHTML = (appData.leaders || []).map((l, idx) => `
                 <div class="border p-3 rounded-lg flex flex-col md:flex-row gap-3 items-center">
                     <img src="${l.photo}" class="w-12 h-12 rounded-full object-cover border">
@@ -662,7 +695,6 @@
             `).join('');
         }
 
-        // Member Roster Operations (Add / Edit / Save)
         async function saveMember() {
             const idx = parseInt(document.getElementById('editMemberIndex').value);
             const name = document.getElementById('mName').value.trim();
@@ -691,7 +723,7 @@
                 appData.members.push(memberObj);
             }
 
-            await syncCloudData();
+            saveData();
             renderUI();
             populateAdminData();
             resetMemberForm();
@@ -716,22 +748,21 @@
             document.getElementById('memberFormTitle').innerText = "নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন";
         }
 
-        async function removeMember(idx) {
+        function removeMember(idx) {
             if (confirm("এই সদস্যকে মেম্বার তালিকা থেকে বাদ দিতে চান?")) {
                 appData.members.splice(idx, 1);
-                await syncCloudData();
+                saveData();
                 renderUI();
                 populateAdminData();
             }
         }
 
-        // Branding
-        async function saveBranding() {
+        function saveBranding() {
             appData.title = document.getElementById('inputHeroTitle').value;
             appData.motto = document.getElementById('inputMotto').value;
             appData.notice = document.getElementById('inputNotice').value;
             appData.showNotice = document.getElementById('toggleNoticeShow').checked;
-            await syncCloudData();
+            saveData();
             renderUI();
             alert("ব্র্যান্ডিং সেভ হয়েছে!");
         }
@@ -739,43 +770,50 @@
         async function uploadImage(input, target) {
             if (input.files.length > 0) {
                 appData[target] = await readFileAsBase64(input.files[0]);
-                await syncCloudData();
+                saveData();
                 renderUI();
                 alert("ছবি আপলোড সম্পন্ন!");
             }
         }
 
-        // Gallery Operations
         async function addGalleryImage() {
             const input = document.getElementById('galleryFileInput');
-            if (input.files.length > 0) {
-                const img = await readFileAsBase64(input.files[0]);
-                if (!appData.gallery) appData.gallery = [];
-                appData.gallery.push(img);
-                await syncCloudData();
-                renderUI();
-                populateAdminData();
-                input.value = '';
-                alert("গ্যালারিতে নতুন ছবি যোগ হয়েছে!");
+            const captionInput = document.getElementById('galleryCaptionInput');
+
+            if (input.files.length === 0) {
+                alert("দয়া করে একটি ছবি সিলেক্ট করুন!");
+                return;
             }
+
+            const img = await readFileAsBase64(input.files[0]);
+            const caption = captionInput.value.trim() || "অ্যাক্টিভিটি প্রোগ্রাম";
+
+            if (!appData.gallery) appData.gallery = [];
+            appData.gallery.push({ img, caption });
+
+            saveData();
+            renderUI();
+            populateAdminData();
+
+            input.value = '';
+            captionInput.value = '';
+            alert("ক্যাপশন সহ নতুন ছবি গ্যালারিতে যোগ হয়েছে!");
         }
 
-        async function removeGalleryImage(idx) {
+        function removeGalleryImage(idx) {
             appData.gallery.splice(idx, 1);
-            await syncCloudData();
+            saveData();
             renderUI();
             populateAdminData();
         }
 
-        // Leaders Operation
-        async function updateLeader(idx, field, val) {
+        function updateLeader(idx, field, val) {
             appData.leaders[idx][field] = val;
-            await syncCloudData();
+            saveData();
             renderUI();
         }
 
-        // App Approval
-        async function approveApp(idx) {
+        function approveApp(idx) {
             const app = appData.applications[idx];
             const bsid = prompt("বিএসআইডি (BSID) নির্ধারণ করুন:", "BSID-" + Math.floor(10000 + Math.random() * 90000));
             if (bsid) {
@@ -787,17 +825,17 @@
                     photo: app.photo
                 });
                 appData.applications.splice(idx, 1);
-                await syncCloudData();
+                saveData();
                 renderUI();
                 populateAdminData();
                 alert("আবেদন অনুমোদন করা হয়েছে!");
             }
         }
 
-        async function deleteApp(idx) {
+        function deleteApp(idx) {
             if (confirm("আবেদনটি ডিলিট করবেন?")) {
                 appData.applications.splice(idx, 1);
-                await syncCloudData();
+                saveData();
                 renderUI();
                 populateAdminData();
             }
@@ -830,7 +868,7 @@
             });
         }
 
-        window.onload = loadCloudData;
+        window.onload = loadData;
     </script>
 </body>
 </html>
