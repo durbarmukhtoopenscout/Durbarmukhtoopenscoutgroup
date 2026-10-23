@@ -41,9 +41,9 @@
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center flex-col gap-3 transition-opacity">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/95 z-50 flex items-center justify-center flex-col gap-3 transition-opacity duration-300">
         <div class="w-12 h-12 border-4 border-scoutGreen border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ওয়েবসাইটের তথ্য লোড হচ্ছে...</p>
+        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ক্লাউড ডাটাবেজ থেকে তথ্য লোড হচ্ছে...</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -148,12 +148,10 @@
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
 
-                <!-- Search Filter Bar -->
                 <div class="max-w-xl mx-auto mb-8">
                     <input type="text" id="memberSearch" onkeyup="filterMembers()" placeholder="নাম, পদবি বা বিএসআইডি (BSID) দিয়ে খুঁজুন..." class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:border-scoutGreen shadow-sm text-sm">
                 </div>
 
-                <!-- Members Grid -->
                 <div id="memberGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
         </section>
@@ -411,11 +409,15 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- Application Script -->
+    <!-- Application Script with JSONBin Integration -->
     <script>
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
-        const STORAGE_KEY = "DURBAR_SCOUT_FULL_APP_DATA";
+        
+        // JSONBin Integration Keys
+        const JSONBIN_BIN_ID = "6adbcd03ac6210605a4d44eb";
+        const JSONBIN_MASTER_KEY = "$2a$10$iS.S1lzqxnJCTVK65quxVO6MDS7tZPWRt9eYwVINFrO0TGlmrgnJ.";
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
         let defaultData = {
             logo: "https://via.placeholder.com/150?text=Logo",
@@ -442,26 +444,50 @@
 
         let appData = defaultData;
 
-        function loadData() {
+        // Fetch Data from Global Cloud Database
+        async function loadData() {
             try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    appData = JSON.parse(saved);
+                const response = await fetch(JSONBIN_URL, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': JSONBIN_MASTER_KEY
+                    }
+                });
+
+                if (response.ok) {
+                    const resData = await response.json();
+                    if (resData.record && resData.record.title) {
+                        appData = resData.record;
+                    } else {
+                        await saveData();
+                    }
                 } else {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+                    console.warn("JSONBin Read Failed, using default dataset");
                 }
             } catch (e) {
-                appData = defaultData;
+                console.error("Cloud Connection Error:", e);
+            } finally {
+                renderUI();
+                document.getElementById('loadingOverlay').classList.add('hidden');
             }
-            renderUI();
-            document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        function saveData() {
+        // Save Data to Global Cloud Database
+        async function saveData() {
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+                const response = await fetch(JSONBIN_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_MASTER_KEY
+                    },
+                    body: JSON.stringify(appData)
+                });
+                if (!response.ok) {
+                    console.error("Cloud Save Failed");
+                }
             } catch(e) {
-                console.error("Storage Save Failed", e);
+                console.error("Cloud Save Error:", e);
             }
         }
 
@@ -579,7 +605,7 @@
 
             if (!appData.applications) appData.applications = [];
             appData.applications.push(appPayload);
-            saveData();
+            await saveData();
 
             alert("আপনার আবেদনটি সফলভাবে জমা হয়েছে!");
             document.getElementById('membershipForm').reset();
@@ -723,11 +749,11 @@
                 appData.members.push(memberObj);
             }
 
-            saveData();
+            await saveData();
             renderUI();
             populateAdminData();
             resetMemberForm();
-            alert("সদস্য তথ্য সফলভাবে সংরক্ষণ করা হয়েছে!");
+            alert("সদস্য তথ্য সফলভাবে ক্লাউডে সেভ করা হয়েছে!");
         }
 
         function editMember(idx) {
@@ -748,31 +774,31 @@
             document.getElementById('memberFormTitle').innerText = "নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন";
         }
 
-        function removeMember(idx) {
+        async function removeMember(idx) {
             if (confirm("এই সদস্যকে মেম্বার তালিকা থেকে বাদ দিতে চান?")) {
                 appData.members.splice(idx, 1);
-                saveData();
+                await saveData();
                 renderUI();
                 populateAdminData();
             }
         }
 
-        function saveBranding() {
+        async function saveBranding() {
             appData.title = document.getElementById('inputHeroTitle').value;
             appData.motto = document.getElementById('inputMotto').value;
             appData.notice = document.getElementById('inputNotice').value;
             appData.showNotice = document.getElementById('toggleNoticeShow').checked;
-            saveData();
+            await saveData();
             renderUI();
-            alert("ব্র্যান্ডিং সেভ হয়েছে!");
+            alert("ব্র্যান্ডিং ক্লাউডে সেভ হয়েছে!");
         }
 
         async function uploadImage(input, target) {
             if (input.files.length > 0) {
                 appData[target] = await readFileAsBase64(input.files[0]);
-                saveData();
+                await saveData();
                 renderUI();
-                alert("ছবি আপলোড সম্পন্ন!");
+                alert("ছবি আপলোড ও সিঙ্ক সম্পন্ন!");
             }
         }
 
@@ -791,29 +817,29 @@
             if (!appData.gallery) appData.gallery = [];
             appData.gallery.push({ img, caption });
 
-            saveData();
+            await saveData();
             renderUI();
             populateAdminData();
 
             input.value = '';
             captionInput.value = '';
-            alert("ক্যাপশন সহ নতুন ছবি গ্যালারিতে যোগ হয়েছে!");
+            alert("ক্যাপশন সহ নতুন ছবি গ্যালারিতে যোগ ও লাইভ সেভ হয়েছে!");
         }
 
-        function removeGalleryImage(idx) {
+        async function removeGalleryImage(idx) {
             appData.gallery.splice(idx, 1);
-            saveData();
+            await saveData();
             renderUI();
             populateAdminData();
         }
 
-        function updateLeader(idx, field, val) {
+        async function updateLeader(idx, field, val) {
             appData.leaders[idx][field] = val;
-            saveData();
+            await saveData();
             renderUI();
         }
 
-        function approveApp(idx) {
+        async function approveApp(idx) {
             const app = appData.applications[idx];
             const bsid = prompt("বিএসআইডি (BSID) নির্ধারণ করুন:", "BSID-" + Math.floor(10000 + Math.random() * 90000));
             if (bsid) {
@@ -825,17 +851,17 @@
                     photo: app.photo
                 });
                 appData.applications.splice(idx, 1);
-                saveData();
+                await saveData();
                 renderUI();
                 populateAdminData();
-                alert("আবেদন অনুমোদন করা হয়েছে!");
+                alert("আবেদন অনুমোদন ও সদস্য তালিকায় যুক্ত হয়েছে!");
             }
         }
 
-        function deleteApp(idx) {
+        async function deleteApp(idx) {
             if (confirm("আবেদনটি ডিলিট করবেন?")) {
                 appData.applications.splice(idx, 1);
-                saveData();
+                await saveData();
                 renderUI();
                 populateAdminData();
             }
