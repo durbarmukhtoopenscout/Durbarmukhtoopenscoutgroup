@@ -43,7 +43,7 @@
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 bg-white/95 z-50 flex items-center justify-center flex-col gap-3 transition-opacity duration-300">
         <div class="w-12 h-12 border-4 border-scoutGreen border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ক্লাউড ডাটাবেজ থেকে তথ্য লোড হচ্ছে...</p>
+        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ফায়ারবেস ক্লাউড ডাটাবেজ থেকে তথ্য লোড হচ্ছে...</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -409,16 +409,13 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- Application Script with Chrome-Compatible Cloud Sync -->
+    <!-- Application Script with Google Firebase Realtime Database Engine -->
     <script>
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
         
-        // Public JSONBin Config with Cross-Browser Protocol
-        const JSONBIN_BIN_ID = "6adbd334ffd5d160538703be";
-        const JSONBIN_MASTER_KEY = "$2a$10$iS.S1lzqxnJCTVK65quxVO6MDS7tZPWRt9eYwVINFrO0TGlmrgnJ.";
-        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-        const LOCAL_STORAGE_BACKUP = "DURBAR_SCOUT_LOCAL_CACHE_V3";
+        // Google Firebase Database URL Integration
+        const FIREBASE_DB_URL = "https://durbarmukhtoopenscout-77f4d-default-rtdb.firebaseio.com/appData.json";
 
         let defaultData = {
             logo: "https://via.placeholder.com/150?text=Logo",
@@ -445,63 +442,36 @@
 
         let appData = defaultData;
 
-        // Universal Loader (Edge + Chrome + Mobile)
+        // Firebase Cloud Loader
         async function loadData() {
-            let loadedFromCloud = false;
             try {
-                // Cache-busting URL parameter added to bypass Chrome stale cache
-                const timestamp = new Date().getTime();
-                const response = await fetch(`${JSONBIN_URL}/latest?t=${timestamp}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-Master-Key': JSONBIN_MASTER_KEY,
-                        'X-Bin-Meta': 'false'
-                    }
-                });
-
+                const response = await fetch(FIREBASE_DB_URL);
                 if (response.ok) {
                     const resData = await response.json();
                     if (resData && resData.title) {
                         appData = resData;
-                        loadedFromCloud = true;
-                        localStorage.setItem(LOCAL_STORAGE_BACKUP, JSON.stringify(appData));
+                    } else {
+                        await saveData();
                     }
                 }
             } catch (e) {
-                console.warn("Cloud Read Error, switching to local cache", e);
+                console.error("Firebase Connection Error:", e);
+            } finally {
+                renderUI();
+                document.getElementById('loadingOverlay').classList.add('hidden');
             }
-
-            if (!loadedFromCloud) {
-                const localCache = localStorage.getItem(LOCAL_STORAGE_BACKUP);
-                if (localCache) {
-                    try { appData = JSON.parse(localCache); } catch(err){}
-                }
-            }
-
-            renderUI();
-            document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // Universal Saver (Cross-Browser Supported)
+        // Firebase Cloud Saver
         async function saveData() {
-            localStorage.setItem(LOCAL_STORAGE_BACKUP, JSON.stringify(appData));
             try {
-                const response = await fetch(JSONBIN_URL, {
+                await fetch(FIREBASE_DB_URL, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_MASTER_KEY
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(appData)
                 });
-                
-                if (response.ok) {
-                    console.log("Global Sync Successful");
-                } else {
-                    console.error("Cloud Save HTTP Error:", response.status);
-                }
             } catch(e) {
-                console.error("Cloud Save Failed", e);
+                console.error("Firebase Save Error:", e);
             }
         }
 
@@ -522,7 +492,7 @@
                 noticeTicker.classList.add('hidden');
             }
 
-            renderMembers(appData.members);
+            renderMembers(appData.members || []);
             document.getElementById('appBadge').innerText = appData.applications ? appData.applications.length : 0;
 
             document.getElementById('galleryGrid').innerHTML = (appData.gallery || []).map(g => {
@@ -570,7 +540,7 @@
 
         function filterMembers() {
             const query = document.getElementById('memberSearch').value.toLowerCase();
-            const filtered = appData.members.filter(m => 
+            const filtered = (appData.members || []).filter(m => 
                 m.name.toLowerCase().includes(query) || 
                 m.rank.toLowerCase().includes(query) || 
                 (m.bsid && m.bsid.toLowerCase().includes(query))
@@ -665,7 +635,7 @@
             document.getElementById('toggleNoticeShow').checked = appData.showNotice;
 
             const adminMemberList = document.getElementById('adminMemberList');
-            adminMemberList.innerHTML = appData.members.map((m, idx) => `
+            adminMemberList.innerHTML = (appData.members || []).map((m, idx) => `
                 <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
                     <div class="flex items-center gap-3">
                         <img src="${m.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border">
@@ -741,6 +711,8 @@
                 return;
             }
 
+            if (!appData.members) appData.members = [];
+
             let photo = idx >= 0 ? appData.members[idx].photo : "https://via.placeholder.com/150";
             if (photoFile.length > 0) {
                 photo = await readFileAsBase64(photoFile[0]);
@@ -761,7 +733,7 @@
             renderUI();
             populateAdminData();
             resetMemberForm();
-            alert("সদস্য তথ্য সফলভাবে সেভ করা হয়েছে!");
+            alert("সদস্য তথ্য ফায়ারবেসে সফলভাবে সেভ করা হয়েছে!");
         }
 
         function editMember(idx) {
@@ -798,7 +770,7 @@
             appData.showNotice = document.getElementById('toggleNoticeShow').checked;
             await saveData();
             renderUI();
-            alert("ব্র্যান্ডিং সেভ হয়েছে!");
+            alert("ব্র্যান্ডিং ফায়ারবেসে সেভ হয়েছে!");
         }
 
         async function uploadImage(input, target) {
@@ -831,7 +803,7 @@
 
             input.value = '';
             captionInput.value = '';
-            alert("ক্যাপশন সহ নতুন ছবি গ্যালারিতে যোগ হয়েছে!");
+            alert("ক্যাপশন সহ নতুন ছবি ফায়ারবেস গ্যালারিতে যোগ হয়েছে!");
         }
 
         async function removeGalleryImage(idx) {
@@ -851,6 +823,7 @@
             const app = appData.applications[idx];
             const bsid = prompt("বিএসআইডি (BSID) নির্ধারণ করুন:", "BSID-" + Math.floor(10000 + Math.random() * 90000));
             if (bsid) {
+                if (!appData.members) appData.members = [];
                 appData.members.push({
                     id: Date.now(),
                     name: app.name,
