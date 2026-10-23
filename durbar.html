@@ -1,0 +1,1625 @@
+
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>দূর্বার মুক্ত স্কাউট দল, বড়লেখা</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Hind Siliguri -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        scout: {
+                            purple: '#4b2c85',
+                            darkPurple: '#331a60',
+                            gold: '#f2a900',
+                            green: '#006a4e',
+                            red: '#f42a41',
+                            bg: '#f8fafc'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Hind Siliguri', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Printable A4 Styling */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #a4PrintModal, #a4PrintModal * {
+                visibility: visible;
+            }
+            #a4PrintModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+                padding: 0;
+                margin: 0;
+                box-shadow: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-md border-b border-purple-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Group Logo & Title -->
+                <div class="flex items-center gap-3">
+                    <img id="siteHeaderLogo" src="" alt="দূর্বার স্কাউট লোগো" class="h-14 w-14 object-contain rounded-full border-2 border-scout-gold p-0.5 bg-purple-50">
+                    <div>
+                        <h1 id="siteHeaderTitle" class="text-xl sm:text-28 font-bold text-scout-purple leading-tight">দূর্বার মুক্ত স্কাউট দল</h1>
+                        <p id="siteHeaderSubtitle" class="text-xs sm:text-sm text-gray-600 font-medium">বড়লেখা, মৌলভীবাজার</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-6 font-semibold text-gray-700">
+                    <a href="#hero" class="hover:text-scout-purple transition-colors">হোম</a>
+                    <a href="#notice" class="hover:text-scout-purple transition-colors">নোটিশ</a>
+                    <a href="#about" class="hover:text-scout-purple transition-colors">আমাদের কথা</a>
+                    <a href="#roster" class="hover:text-scout-purple transition-colors">সদস্য তালিকা</a>
+                    <a href="#apply" class="hover:text-scout-purple transition-colors">সদস্য আবেদন</a>
+                    <a href="#gallery" class="hover:text-scout-purple transition-colors">গ্যালারি</a>
+                    <a href="#contact" class="hover:text-scout-purple transition-colors">যোগাযোগ</a>
+                </nav>
+
+                <!-- Action Button & Mobile Toggle -->
+                <div class="flex items-center gap-3">
+                    <button id="adminLoginTriggerBtn" onclick="toggleAdminModal(true)" class="bg-scout-purple hover:bg-scout-darkPurple text-white px-4 py-2 rounded-lg font-medium text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span id="adminBtnText">অ্যাডমিন লগইন</span>
+                    </button>
+                    <button id="adminPanelOpenBtn" onclick="openAdminPanel()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-all shadow-md flex items-center gap-2">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <span>প্যানেল</span>
+                    </button>
+                    
+                    <button onclick="toggleMobileNav()" class="lg:hidden text-gray-700 hover:text-scout-purple p-2 text-2xl focus:outline-none">
+                        <i class="fa-solid fa-bars" id="mobileNavIcon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobileNav" class="hidden lg:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-4 space-y-2 shadow-inner">
+            <a href="#hero" onclick="toggleMobileNav()" class="block py-2 px-3 rounded hover:bg-purple-50 text-gray-800 font-medium">হোম</a>
+            <a href="#notice" onclick="toggleMobileNav()" class="block py-2 px-3 rounded hover:bg-purple-50 text-gray-800 font-medium">নোটিশ</a>
+            <a href="#about" onclick="toggleMobileNav()" class="block py-2 px-3 rounded hover:bg-purple-50 text-gray-800 font-medium">আমাদের কথা</a>
+            <a href="#roster" onclick="toggleMobileNav()" class="block py-2 px-3 rounded hover:bg-purple-50 text-gray-800 font-medium">সদস্য তালিকা</a>
+            <a href="#apply" onclick="toggleMobileNav()" class="block py-2 px-3 rounded hover:bg-purple-50 text-gray-800 font-medium">সদস্য আবেদন</a>
+            <a href="#gallery" onclick="toggleMobileNav()" class="block py-2 px-3 rounded hover:bg-purple-50 text-gray-800 font-medium">গ্যালারি</a>
+            <a href="#contact" onclick="toggleMobileNav()" class="block py-2 px-3 rounded hover:bg-purple-50 text-gray-800 font-medium">যোগাযোগ</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative bg-gradient-to-r from-scout-darkPurple to-scout-purple text-white py-16 lg:py-24 overflow-hidden">
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+            <img id="heroCoverBg" src="" alt="Cover" class="w-full h-full object-cover">
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-8 text-center lg:text-left space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-scout-gold/20 text-scout-gold border border-scout-gold/40 px-3 py-1 rounded-full text-sm font-semibold tracking-wide">
+                        <i class="fa-solid fa-award"></i>
+                        <span id="siteMottoText">মূলমন্ত্র: সেবা</span>
+                    </div>
+                    <h1 id="heroTitle" class="text-3xl sm:text-5xl font-extrabold leading-tight tracking-tight">
+                        দূর্বার মুক্ত স্কাউট দল, বড়লেখা
+                    </h1>
+                    <p id="heroSubtitle" class="text-lg sm:text-xl text-purple-100 max-w-2xl font-light">
+                        মৌলভীবাজার জেলার স্বনামধন্য মুক্ত স্কাউট দল। সুনাগরিক গড়ে তোলার লক্ষ্যে এবং সমাজের সেবায় সদা প্রস্তুত।
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#apply" class="bg-scout-gold hover:bg-amber-500 text-gray-900 font-bold px-6 py-3 rounded-xl shadow-lg transition-all hover:scale-105 flex items-center gap-2">
+                            <i class="fa-solid fa-id-card"></i>
+                            <span>অনলাইন মেম্বারশিপ ফরম</span>
+                        </a>
+                        <a href="#roster" class="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all hover:scale-105 flex items-center gap-2">
+                            <i class="fa-solid fa-users"></i>
+                            <span>সদস্য তালিকা</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:col-span-4 flex justify-center">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-scout-gold to-purple-400 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                        <img id="heroCoverDisplay" src="" alt="দূর্বার স্কাউট কভার ছবি" class="relative rounded-2xl w-full max-w-sm h-64 sm:h-80 object-cover border-4 border-white shadow-2xl">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NOTICE BANNER -->
+    <section id="notice" class="bg-amber-50 border-y border-amber-200 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-amber-300">
+                <div class="flex items-center gap-2 bg-amber-500 text-white px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider shrink-0">
+                    <i class="fa-solid fa-bullhorn"></i> BSID নোটিশ
+                </div>
+                <div class="flex-1 text-sm sm:text-base font-semibold text-gray-800 text-center sm:text-left" id="bsidNoticeText">
+                    সকল স্কাউট সদস্যদের দ্রুত সময়ের মধ্যে বাংলাদেশ স্কাউটস আইডি (BSID) নিবন্ধন সম্পূর্ণ করার নির্দেশ দেওয়া হচ্ছে।
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT US & SCOUT PRINCIPLES -->
+    <section id="about" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-scout-purple">আমাদের কথা ও স্কাউট নীতিমালা</h2>
+                <div class="w-20 h-1.5 bg-scout-gold mx-auto my-3 rounded-full"></div>
+                <p id="aboutUsDescription" class="text-gray-600 leading-relaxed text-base sm:text-lg">
+                    দূর্বার মুক্ত স্কাউট দল, বড়লেখা একটি সেবামূলক যুব সংগঠন। নিয়ম-শৃঙ্খলা, আত্মনির্ভরশীলতা এবং চরিত্র গঠনের উদ্দেশ্যে আমরা প্রতিনিয়ত কাজ করে যাচ্ছি।
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Scout Oath -->
+                <div class="bg-purple-50 rounded-2xl p-6 sm:p-8 border border-purple-100 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-scout-purple text-white flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-scout-purple">স্কাউট প্রতিজ্ঞা (Scout Oath)</h3>
+                    </div>
+                    <p class="text-gray-700 italic bg-white p-4 rounded-xl border border-purple-200 leading-relaxed shadow-inner">
+                        "আমি আমার আত্মমর্যাদার উপর নির্ভর করে প্রতিজ্ঞা করছি যে, আমি ঈশ্বর ও আমার দেশের প্রতি কর্তব্য পালন করতে, সর্বদা অপরকে সাহায্য করতে এবং স্কাউট আইন মেনে চলতে আমার যথাসাধ্য চেষ্টা করব।"
+                    </p>
+                </div>
+
+                <!-- Scout Laws -->
+                <div class="bg-emerald-50 rounded-2xl p-6 sm:p-8 border border-emerald-100 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-scout-green text-white flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-scout-green">৭টি স্কাউট আইন (Scout Law)</h3>
+                    </div>
+                    <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm sm:text-base font-semibold text-gray-800">
+                        <li class="bg-white px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">১</span> স্কাউট বিশ্বাসী</li>
+                        <li class="bg-white px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">২</span> স্কাউট সবার বন্ধু</li>
+                        <li class="bg-white px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">৩</span> স্কাউট বিনয়ী ও অনুগত</li>
+                        <li class="bg-white px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">৪</span> স্কাউট জীবের প্রতি সদয়</li>
+                        <li class="bg-white px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">৫</span> স্কাউট সদা প্রফুল্ল</li>
+                        <li class="bg-white px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">৬</span> স্কাউট মিতব্যয়ী</li>
+                        <li class="bg-white px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2 sm:col-span-2"><span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">৭</span> স্কাউট চিন্তা, কথা ও কাজে নির্মল</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MEMBER ROSTER DIRECTORY -->
+    <section id="roster" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h2 class="text-3xl font-bold text-scout-purple">সদস্য তালিকা (Scout Roster)</h2>
+                <div class="w-20 h-1.5 bg-scout-gold mx-auto my-3 rounded-full"></div>
+                <p class="text-gray-600">আমাদের দলের নিবন্ধিত সক্রিয় সদস্যবৃন্দ। সার্চ বা ফিল্টার করে নির্দিষ্ট সদস্য খুঁজুন।</p>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200 mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-2 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="rosterSearchInput" oninput="renderPublicRoster()" placeholder="নাম বা BSID নম্বর দিয়ে খুঁজুন..." class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-scout-purple focus:border-transparent text-sm">
+                </div>
+                <div>
+                    <select id="rosterRankFilter" onchange="renderPublicRoster()" class="w-full py-3 px-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-scout-purple focus:border-transparent text-sm bg-white">
+                        <option value="ALL">সকল পদবী / র‍্যাঙ্ক</option>
+                        <option value="Group Leader">Group Leader</option>
+                        <option value="Senior Patrol Leader">Senior Patrol Leader</option>
+                        <option value="Patrol Leader">Patrol Leader</option>
+                        <option value="Assistant Patrol Leader">Assistant Patrol Leader</option>
+                        <option value="Scout Member">Scout Member</option>
+                        <option value="Rover Scout">Rover Scout</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Member Cards Grid -->
+            <div id="rosterGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Dynamically populated -->
+            </div>
+            <div id="rosterEmptyMsg" class="hidden text-center py-12 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-500 font-medium">
+                কোনো সদস্যের তথ্য পাওয়া যায়নি।
+            </div>
+        </div>
+    </section>
+
+    <!-- ONLINE MEMBERSHIP FORM -->
+    <section id="apply" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-purple-50 to-amber-50 rounded-3xl p-6 sm:p-10 border border-purple-100 shadow-xl">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-scout-purple text-scout-gold rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-scout-purple">অনলাইন মেম্বারশিপ আবেদন ফরম</h2>
+                    <p class="text-gray-600 text-sm sm:text-base mt-1">দূর্বার মুক্ত স্কাউট দলের নতুন সদস্য পদের জন্য নিচের বিবরণ সঠিক তথ্য দিয়ে পূরণ করুন</p>
+                </div>
+
+                <form id="membershipForm" onsubmit="handleMembershipSubmit(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">আবেদনকারীর পূর্ণ নাম *</label>
+                            <input type="text" id="applicantName" required placeholder="উদা: মোঃ আরিফুল ইসলাম" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">পিতার নাম *</label>
+                            <input type="text" id="applicantFather" required placeholder="পিতার নাম লিখুন" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">মাতার নাম *</label>
+                            <input type="text" id="applicantMother" required placeholder="মাতার নাম লিখুন" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">জন্ম তারিখ *</label>
+                            <input type="date" id="applicantDob" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">মোবাইল নম্বর *</label>
+                            <input type="tel" id="applicantPhone" required placeholder="017XXXXXXXX" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">BSID নম্বর (যদি থাকে)</label>
+                            <input type="text" id="applicantBsid" placeholder="উদা: BSID-98231" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">বর্তমান ঠিকানা *</label>
+                        <textarea id="applicantAddress" required rows="2" placeholder="গ্রাম/রাস্তা, ডাকঘর, উপজেলা, জেলা" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none"></textarea>
+                    </div>
+
+                    <!-- Direct File Upload for Passport Photo -->
+                    <div class="border-2 border-dashed border-purple-200 rounded-2xl p-4 bg-white text-center">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">ছবি আপলোড করুন (Passport Photo) *</label>
+                        <input type="file" id="applicantPhotoFile" accept="image/*" required onchange="previewImageFile(this, 'applicantPhotoPreview')" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-purple-100 file:text-scout-purple hover:file:bg-purple-200 cursor-pointer">
+                        <div class="mt-3 flex justify-center">
+                            <img id="applicantPhotoPreview" src="https://placehold.co/120x150/f1f5f9/64748b?text=Photo+Preview" alt="Preview" class="h-28 w-24 object-cover border border-gray-300 rounded-lg shadow-sm">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                        <button type="submit" class="w-full sm:w-auto bg-scout-purple hover:bg-scout-darkPurple text-white px-8 py-3.5 rounded-xl font-bold shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>আবেদন জমা দিন</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACTIVITIES GALLERY -->
+    <section id="gallery" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h2 class="text-3xl font-bold text-scout-purple">কার্যক্রম ও ফটো গ্যালারি</h2>
+                <div class="w-20 h-1.5 bg-scout-gold mx-auto my-3 rounded-full"></div>
+                <p class="text-gray-600">আমাদের দলের বিভিন্ন ক্যাম্পিং, র‍্যালি ও সামাজিক সেবামূলক কর্মকাণ্ডের মুহূর্ত</p>
+            </div>
+
+            <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </section>
+
+    <!-- LEADERSHIP & CONTACTS -->
+    <section id="contact" class="py-16 bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-scout-purple">নেতৃত্ব ও যোগাযোগ</h2>
+                <div class="w-20 h-1.5 bg-scout-gold mx-auto my-3 rounded-full"></div>
+                <p class="text-gray-600">যেকোনো প্রয়োজনে সরাসরি আমাদের দায়িত্বপ্রাপ্ত নেতাদের সাথে যোগাযোগ করুন</p>
+            </div>
+
+            <div id="leadershipGrid" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-scout-darkPurple text-white py-10 mt-auto border-t-4 border-scout-gold">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center gap-3">
+                <img id="footerLogo" src="" alt="Logo" class="h-10 w-10 object-contain rounded-full bg-white p-0.5">
+                <span class="text-xl font-bold">দূর্বার মুক্ত স্কাউট দল, বড়লেখা</span>
+            </div>
+            <p class="text-purple-200 text-sm max-w-md mx-auto">
+                মৌলভীবাজার, সিলেট বিভাগ, বাংলাদেশ | মূলমন্ত্র: সেবা
+            </p>
+            <div class="pt-4 border-t border-purple-800 text-xs text-purple-300">
+                © <span id="currentYear"></span> দূর্বার মুক্ত স্কাউট দল। সর্বস্বত্ব সংরক্ষিত।
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ==================== MODALS & OVERLAYS ==================== -->
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 relative border border-gray-100 transform transition-all">
+            <button onclick="toggleAdminModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-purple-100 text-scout-purple rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900">অ্যাডমিন প্রবেশাধিকার</h3>
+                <p class="text-xs text-gray-500 mt-1">লগইন করতে সিস্টেম পাসওয়ার্ড প্রদান করুন (ডিফল্ট: durbar123)</p>
+            </div>
+
+            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">পাসওয়ার্ড</label>
+                    <div class="relative">
+                        <input type="password" id="adminPasswordInput" required placeholder="পাসওয়ার্ড লিখুন" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-scout-purple focus:outline-none pr-10 text-sm">
+                        <button type="button" onclick="togglePasswordVisibility('adminPasswordInput', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="loginErrorMsg" class="hidden text-red-600 text-xs font-semibold bg-red-50 p-2.5 rounded-lg border border-red-200"></div>
+                <button type="submit" class="w-full bg-scout-purple hover:bg-scout-darkPurple text-white py-3 rounded-xl font-bold text-sm shadow-md transition-all">
+                    লগইন করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- FULL ADMIN PANEL OVERLAY -->
+    <div id="adminPanelModal" class="fixed inset-0 bg-slate-100 z-50 hidden overflow-y-auto flex flex-col">
+        <!-- Admin Header -->
+        <div class="bg-scout-darkPurple text-white px-4 sm:px-8 py-4 flex items-center justify-between shadow-lg sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <div class="bg-scout-gold text-slate-900 p-2 rounded-lg font-bold">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg sm:text-xl font-bold">অ্যাডমিন কন্ট্রোল প্যানেল (CMS)</h2>
+                    <p class="text-xs text-purple-200">দূর্বার মুক্ত স্কাউট দল, বড়লেখা</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="closeAdminPanel()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition">
+                    <i class="fa-solid fa-globe"></i> সাইটে ফিরুন
+                </button>
+                <button onclick="handleAdminLogout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition">
+                    <i class="fa-solid fa-right-from-bracket"></i> লগআউট
+                </button>
+            </div>
+        </div>
+
+        <!-- Admin Content Area -->
+        <div class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+            <!-- Tabs Nav -->
+            <div class="flex border-b border-gray-300 overflow-x-auto gap-2 mb-6 scrollbar-none bg-white p-2 rounded-xl shadow-sm">
+                <button onclick="switchAdminTab('tabBranding')" id="btnTabBranding" class="admin-tab-btn active px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-pen-to-square"></i> ওয়েবসাইট ব্র্যান্ডিং
+                </button>
+                <button onclick="switchAdminTab('tabApplications')" id="btnTabApplications" class="admin-tab-btn px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-user-clock"></i> পেন্ডিং আবেদনসমূহ <span id="pendingBadge" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+                </button>
+                <button onclick="switchAdminTab('tabRoster')" id="btnTabRoster" class="admin-tab-btn px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-users-gear"></i> সদস্য তালিকা পরিচালনা
+                </button>
+                <button onclick="switchAdminTab('tabGallery')" id="btnTabGallery" class="admin-tab-btn px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-images"></i> গ্যালারি আপলোড
+                </button>
+                <button onclick="switchAdminTab('tabLeaders')" id="btnTabLeaders" class="admin-tab-btn px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-address-book"></i> লিডারশিপ ইনফো
+                </button>
+                <button onclick="switchAdminTab('tabSettings')" id="btnTabSettings" class="admin-tab-btn px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-key"></i> পাসওয়ার্ড পরিবর্তন
+                </button>
+            </div>
+
+            <!-- TAB 1: BRANDING -->
+            <div id="tabBranding" class="admin-tab-content space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">সাইট টেক্সট ও ছবি আপডেট</h3>
+                    <form onsubmit="saveSiteBranding(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">গ্রুপের নাম</label>
+                                <input type="text" id="adminSiteTitle" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">উপজেলা / জেলা</label>
+                                <input type="text" id="adminSiteSubtitle" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">মূলমন্ত্র (Motto)</label>
+                                <input type="text" id="adminSiteMotto" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">BSID নোটিশ টেক্সট</label>
+                                <input type="text" id="adminNoticeText" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-600 mb-1">আমাদের কথা (About Us Text)</label>
+                            <textarea id="adminAboutText" rows="3" class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                            <!-- Group Logo Direct File Upload -->
+                            <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">গ্রুপ লোগো (Direct File Upload)</label>
+                                <input type="file" accept="image/*" onchange="previewImageFile(this, 'adminLogoPreview')" id="adminLogoFileInput" class="w-full text-xs text-gray-500 mb-2">
+                                <img id="adminLogoPreview" src="" class="h-16 w-16 object-contain rounded-full border bg-white p-1">
+                            </div>
+
+                            <!-- Group Cover Direct File Upload -->
+                            <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">কভার ফটো (Direct File Upload)</label>
+                                <input type="file" accept="image/*" onchange="previewImageFile(this, 'adminCoverPreview')" id="adminCoverFileInput" class="w-full text-xs text-gray-500 mb-2">
+                                <img id="adminCoverPreview" src="" class="h-20 w-full object-cover rounded-lg border">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="bg-scout-purple text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-scout-darkPurple transition">
+                            তথ্য সংরক্ষণ করুন
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 2: PENDING APPLICATIONS -->
+            <div id="tabApplications" class="admin-tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">পেন্ডিং সদস্যপদের আবেদনসমূহ</h3>
+                    <div id="adminApplicationsList" class="space-y-4">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: ROSTER MANAGER -->
+            <div id="tabRoster" class="admin-tab-content hidden space-y-6">
+                <!-- Add Member Form -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4" id="rosterFormHeading">নতুন সদস্য যোগ করুন</h3>
+                    <form id="addRosterMemberForm" onsubmit="handleSaveRosterMember(event)" class="space-y-4">
+                        <input type="hidden" id="editMemberId" value="">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">নাম *</label>
+                                <input type="text" id="mName" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">BSID *</label>
+                                <input type="text" id="mBsid" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">পদবী / র‍্যাঙ্ক *</label>
+                                <select id="mRank" required class="w-full px-3 py-2 border rounded-lg text-sm bg-white">
+                                    <option value="Group Leader">Group Leader</option>
+                                    <option value="Senior Patrol Leader">Senior Patrol Leader</option>
+                                    <option value="Patrol Leader">Patrol Leader</option>
+                                    <option value="Assistant Patrol Leader">Assistant Patrol Leader</option>
+                                    <option value="Scout Member" selected>Scout Member</option>
+                                    <option value="Rover Scout">Rover Scout</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">ইউনিট / পেট্রোল</label>
+                                <input type="text" id="mUnit" placeholder="উদা: টাইগার পেট্রোল" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">মোবাইল নম্বর</label>
+                                <input type="text" id="mPhone" placeholder="017XXXXXXXX" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">ছবি আপলোড (Direct File)</label>
+                                <input type="file" id="mPhotoFile" accept="image/*" onchange="previewImageFile(this, 'mPhotoPreview')" class="w-full text-xs text-gray-500">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <img id="mPhotoPreview" src="https://placehold.co/100x100/f1f5f9/64748b?text=Preview" class="w-14 h-14 object-cover rounded-full border">
+                            <button type="submit" class="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-emerald-700">
+                                তথ্য সেভ করুন
+                            </button>
+                            <button type="button" onclick="resetRosterForm()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-gray-300">
+                                রিসেট
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Existing Members List -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">বর্তমান সদস্য তালিকা</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-gray-600">
+                            <thead class="bg-slate-100 text-gray-800 font-bold uppercase text-xs">
+                                <tr>
+                                    <th class="p-3">ছবি</th>
+                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">BSID</th>
+                                    <th class="p-3">পদবী</th>
+                                    <th class="p-3">মোবাইল</th>
+                                    <th class="p-3 text-right">অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminRosterTableBody" class="divide-y divide-gray-200">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: GALLERY MANAGER -->
+            <div id="tabGallery" class="admin-tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">নতুন গ্যালারি ফটো যোগ করুন</h3>
+                    <form onsubmit="handleGalleryUpload(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">ইভেন্ট ক্যাপশন / বিবরণ *</label>
+                                <input type="text" id="gCaption" required placeholder="উদা: বার্ষিক তাবু বাস ২০২৪" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">ছবি সিলেক্ট করুন (Direct File Upload) *</label>
+                                <input type="file" id="gPhotoFile" accept="image/*" required onchange="previewImageFile(this, 'gPhotoPreview')" class="w-full text-xs text-gray-500">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <img id="gPhotoPreview" src="https://placehold.co/150x100/f1f5f9/64748b?text=Preview" class="h-16 w-24 object-cover rounded border">
+                            <button type="submit" class="bg-scout-purple text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-scout-darkPurple">
+                                ফটো আপলোড করুন
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">বর্তমান গ্যালারি ফটোসমূহ</h3>
+                    <div id="adminGalleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: LEADERSHIP MANAGER -->
+            <div id="tabLeaders" class="admin-tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">নেতৃবৃন্দের তথ্য আপডেট</h3>
+                    <div id="adminLeadersList" class="space-y-6">
+                        <!-- Dynamic Leader Edit Cards -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: ADMIN SETTINGS -->
+            <div id="tabSettings" class="admin-tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 max-w-md">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">অ্যাডমিন পাসওয়ার্ড পরিবর্তন</h3>
+                    <form onsubmit="handlePasswordChange(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">বর্তমান পাসওয়ার্ড *</label>
+                            <input type="password" id="currPassInput" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">নতুন পাসওয়ার্ড *</label>
+                            <input type="password" id="newPassInput" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <button type="submit" class="bg-scout-purple text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-scout-darkPurple">
+                            পাসওয়ার্ড আপডেট করুন
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- PRINTABLE A4 REPLICA MODAL -->
+    <div id="a4PrintModal" class="fixed inset-0 bg-slate-900/80 z-50 hidden overflow-y-auto p-4 sm:p-8 flex flex-col items-center">
+        <div class="no-print w-full max-w-4xl flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow">
+            <h3 class="text-lg font-bold text-gray-800">অফিসিয়াল A4 প্রিন্ট প্রিভিউ</h3>
+            <div class="flex gap-3">
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> প্রিন্ট করুন
+                </button>
+                <button onclick="closeA4PrintModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-bold">
+                    বন্ধ করুন
+                </button>
+            </div>
+        </div>
+
+        <!-- A4 Page Layout -->
+        <div class="a4-page text-black text-sm relative">
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b-2 border-scout-purple pb-4 mb-6">
+                <img id="printLogo" src="" class="h-20 w-20 object-contain">
+                <div class="text-center flex-1 px-4">
+                    <h2 class="text-2xl font-bold text-scout-purple" id="printSiteTitle">দূর্বার মুক্ত স্কাউট দল</h2>
+                    <p class="text-xs font-bold text-gray-700" id="printSiteSubtitle">বড়লেখা, মৌলভীবাজার</p>
+                    <p class="text-xs italic text-gray-500 mt-1">বাংলাদেশ স্কাউটস অনুমোদনপ্রাপ্ত</p>
+                    <div class="inline-block bg-scout-purple text-white px-3 py-0.5 rounded text-xs font-bold mt-2 uppercase tracking-wider">
+                        সদস্য পদ আবেদন ফরম
+                    </div>
+                </div>
+                <img id="printApplicantPhoto" src="" class="h-24 w-20 object-cover border-2 border-gray-400 p-0.5">
+            </div>
+
+            <!-- Content Grid -->
+            <div class="space-y-4 text-gray-800">
+                <div class="flex justify-between text-xs text-gray-500 border-b pb-1">
+                    <span>আবেদন ট্র্যাকিং নম্বর: <strong id="printAppId" class="text-gray-800">#---</strong></span>
+                    <span>আবেদনের তারিখ: <strong id="printAppDate" class="text-gray-800">---</strong></span>
+                </div>
+
+                <table class="w-full border-collapse border border-gray-300 text-left">
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="p-2.5 font-bold bg-gray-50 w-1/3 border-r">আবেদনকারীর নাম</td>
+                            <td class="p-2.5 font-semibold" id="printName">---</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-2.5 font-bold bg-gray-50 border-r">পিতার নাম</td>
+                            <td class="p-2.5" id="printFather">---</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-2.5 font-bold bg-gray-50 border-r">মাতার নাম</td>
+                            <td class="p-2.5" id="printMother">---</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-2.5 font-bold bg-gray-50 border-r">জন্ম তারিখ</td>
+                            <td class="p-2.5" id="printDob">---</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-2.5 font-bold bg-gray-50 border-r">মোবাইল নম্বর</td>
+                            <td class="p-2.5 font-semibold text-purple-900" id="printPhone">---</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-2.5 font-bold bg-gray-50 border-r">BSID (যদি থাকে)</td>
+                            <td class="p-2.5" id="printBsid">---</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-bold bg-gray-50 border-r">বর্তমান ঠিকানা</td>
+                            <td class="p-2.5" id="printAddress">---</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Oath / Declaration -->
+                <div class="mt-6 border p-4 rounded bg-gray-50 text-xs leading-relaxed space-y-2">
+                    <p class="font-bold">আবেদনকারীর অঙ্গীকারনামা:</p>
+                    <p>আমি সজ্ঞানে অঙ্গীকার করছি যে, উপরে বর্ণিত তথ্যসমূহ সম্পূর্ণ সত্য ও নির্ভুল। আমি দূর্বার মুক্ত স্কাউট দলের সকল নিয়ম-কানুন ও স্কাউট আইন মেনে চলতে বাধ্য থাকিব।</p>
+                </div>
+
+                <!-- Signatures -->
+                <div class="pt-20 grid grid-cols-2 gap-12 text-center text-xs font-bold">
+                    <div>
+                        <div class="border-t border-gray-400 pt-1">আবেদনকারীর স্বাক্ষর</div>
+                    </div>
+                    <div>
+                        <div class="border-t border-gray-400 pt-1">দলনেতার অনুমোদন ও স্বাক্ষর</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ==================== INITIAL DEFAULT DATA ====================
+        const DEFAULT_LOGO = "https://placehold.co/150x150/4b2c85/ffffff?text=Durbar+Scout";
+        const DEFAULT_COVER = "https://placehold.co/1200x500/331a60/f2a900?text=Durbar+Mukto+Scout+Group";
+
+        const defaultSiteInfo = {
+            title: "দূর্বার মুক্ত স্কাউট দল",
+            subtitle: "বড়লেখা, মৌলভীবাজার",
+            motto: "মূলমন্ত্র: সেবা",
+            notice: "সকল স্কাউট সদস্যদের দ্রুত সময়ের মধ্যে বাংলাদেশ স্কাউটস আইডি (BSID) নিবন্ধন সম্পূর্ণ করার নির্দেশ দেওয়া হচ্ছে।",
+            about: "দূর্বার মুক্ত স্কাউট দল, বড়লেখা একটি সেবামূলক যুব সংগঠন। নিয়ম-শৃঙ্খলা, আত্মনির্ভরশীলতা এবং চরিত্র গঠনের উদ্দেশ্যে মৌলভীবাজার জেলার বড়লেখা উপজেলায় আমরা সততার সাথে কাজ করে যাচ্ছি।",
+            logo: DEFAULT_LOGO,
+            cover: DEFAULT_COVER
+        };
+
+        const defaultMembers = [
+            {
+                id: 'm1',
+                name: 'সুলতান সাইফ নিরব',
+                bsid: 'BSID-100234',
+                rank: 'Group Leader',
+                unit: 'রভার ইউনিট',
+                phone: '01741148641',
+                photo: 'https://placehold.co/300x300/4b2c85/ffffff?text=Sultan+Saif'
+            },
+            {
+                id: 'm2',
+                name: 'দেবজ্যোতি দাস পদ্ম',
+                bsid: 'BSID-100235',
+                rank: 'Senior Patrol Leader',
+                unit: 'টাইগার পেট্রোল',
+                phone: '+880 1892-752416',
+                photo: 'https://placehold.co/300x300/006a4e/ffffff?text=Debojoti+Das'
+            },
+            {
+                id: 'm3',
+                name: 'মাহমুদুল হাসান',
+                bsid: 'BSID-100236',
+                rank: 'Patrol Leader',
+                unit: 'ঈগল পেট্রোল',
+                phone: '01712345678',
+                photo: 'https://placehold.co/300x300/f2a900/333333?text=Mahmudul'
+            },
+            {
+                id: 'm4',
+                name: 'মোঃ তানভীর আহমেদ',
+                bsid: 'BSID-100237',
+                rank: 'Scout Member',
+                unit: 'লায়ন পেট্রোল',
+                phone: '01812345679',
+                photo: 'https://placehold.co/300x300/e2e8f0/475569?text=Tanvir'
+            }
+        ];
+
+        const defaultGallery = [
+            { id: 'g1', caption: 'বার্ষিক তাবু বাস ও স্কাউট ক্যাম্প ২০২৪', photo: 'https://placehold.co/600x400/4b2c85/ffffff?text=Camp+2024' },
+            { id: 'g2', caption: 'বৃক্ষরোপণ ও পরিবেশ সুরক্ষা অভিযান', photo: 'https://placehold.co/600x400/006a4e/ffffff?text=Tree+Plantation' },
+            { id: 'g3', caption: 'বন্যা দুর্গতদের মাঝে ত্রাণ বিতরণ কার্যক্রম', photo: 'https://placehold.co/600x400/f2a900/1e293b?text=Relief+Drive' }
+        ];
+
+        const defaultLeaders = [
+            {
+                id: 'l1',
+                name: 'সুলতান সাইফ নিরব',
+                title: 'দলনেতা (Group Leader)',
+                phone: '01741148641',
+                whatsapp: '8801741148641',
+                photo: 'https://placehold.co/300x300/4b2c85/ffffff?text=Sultan+Saif'
+            },
+            {
+                id: 'l2',
+                name: 'দেবজ্যোতি দাস পদ্ম',
+                title: 'সিনিয়র পেট্রোল লিডার (SPL)',
+                phone: '+880 1892-752416',
+                whatsapp: '8801892752416',
+                photo: 'https://placehold.co/300x300/006a4e/ffffff?text=Debojoti+Das'
+            }
+        ];
+
+        // Global State Variables
+        let siteInfo = {};
+        let members = [];
+        let gallery = [];
+        let leaders = [];
+        let applications = [];
+        let adminPassword = 'durbar123';
+        let isAdminLoggedIn = false;
+
+
+        // ==================== INITIALIZATION & LOCALSTORAGE ====================
+        window.addEventListener('DOMContentLoaded', () => {
+            initData();
+            renderAllPublicContent();
+            checkAdminSession();
+            document.getElementById('currentYear').innerText = new Date().getFullYear();
+        });
+
+        function initData() {
+            // Load or set Site Info
+            const savedSite = localStorage.getItem('durbar_site_info');
+            siteInfo = savedSite ? JSON.parse(savedSite) : defaultSiteInfo;
+
+            // Load or set Members
+            const savedMembers = localStorage.getItem('durbar_members');
+            members = savedMembers ? JSON.parse(savedMembers) : defaultMembers;
+
+            // Load or set Gallery
+            const savedGallery = localStorage.getItem('durbar_gallery');
+            gallery = savedGallery ? JSON.parse(savedGallery) : defaultGallery;
+
+            // Load or set Leaders
+            const savedLeaders = localStorage.getItem('durbar_leaders');
+            leaders = savedLeaders ? JSON.parse(savedLeaders) : defaultLeaders;
+
+            // Load Applications
+            const savedApps = localStorage.getItem('durbar_applications');
+            applications = savedApps ? JSON.parse(savedApps) : [];
+
+            // Load Admin Password
+            const savedPass = localStorage.getItem('durbar_admin_pass');
+            if (savedPass) adminPassword = savedPass;
+        }
+
+        function saveAllState() {
+            localStorage.setItem('durbar_site_info', JSON.stringify(siteInfo));
+            localStorage.setItem('durbar_members', JSON.stringify(members));
+            localStorage.setItem('durbar_gallery', JSON.stringify(gallery));
+            localStorage.setItem('durbar_leaders', JSON.stringify(leaders));
+            localStorage.setItem('durbar_applications', JSON.stringify(applications));
+            localStorage.setItem('durbar_admin_pass', adminPassword);
+        }
+
+        // Helper: Convert File to Base64 Data URL
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Direct Preview Function for File Inputs
+        async function previewImageFile(inputElement, previewImgId) {
+            if (inputElement.files && inputElement.files[0]) {
+                try {
+                    const base64 = await fileToBase64(inputElement.files[0]);
+                    document.getElementById(previewImgId).src = base64;
+                } catch (e) {
+                    showToast('ছবি লোড করতে সমস্যা হয়েছে', 'error');
+                }
+            }
+        }
+
+        // ==================== PUBLIC SITE RENDERERS ====================
+        function renderAllPublicContent() {
+            // Header & Hero
+            document.getElementById('siteHeaderTitle').innerText = siteInfo.title;
+            document.getElementById('siteHeaderSubtitle').innerText = siteInfo.subtitle;
+            document.getElementById('siteHeaderLogo').src = siteInfo.logo;
+            document.getElementById('footerLogo').src = siteInfo.logo;
+
+            document.getElementById('heroTitle').innerText = siteInfo.title;
+            document.getElementById('heroSubtitle').innerText = siteInfo.subtitle + " - স্বনামধন্য মুক্ত স্কাউট দল।";
+            document.getElementById('siteMottoText').innerText = siteInfo.motto;
+            document.getElementById('heroCoverDisplay').src = siteInfo.cover;
+            document.getElementById('heroCoverBg').src = siteInfo.cover;
+
+            // Notice & About
+            document.getElementById('bsidNoticeText').innerText = siteInfo.notice;
+            document.getElementById('aboutUsDescription').innerText = siteInfo.about;
+
+            // Render Modules
+            renderPublicRoster();
+            renderPublicGallery();
+            renderPublicLeaders();
+        }
+
+        function renderPublicRoster() {
+            const grid = document.getElementById('rosterGrid');
+            const emptyMsg = document.getElementById('rosterEmptyMsg');
+            const searchVal = document.getElementById('rosterSearchInput').value.toLowerCase().trim();
+            const rankVal = document.getElementById('rosterRankFilter').value;
+
+            const filtered = members.filter(m => {
+                const matchesSearch = m.name.toLowerCase().includes(searchVal) || m.bsid.toLowerCase().includes(searchVal);
+                const matchesRank = rankVal === 'ALL' || m.rank === rankVal;
+                return matchesSearch && matchesRank;
+            });
+
+            grid.innerHTML = '';
+            if (filtered.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                return;
+            }
+            emptyMsg.classList.add('hidden');
+
+            filtered.forEach(m => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center text-center group";
+                card.innerHTML = `
+                    <div class="relative mb-4">
+                        <img src="${m.photo}" alt="${m.name}" class="w-24 h-24 rounded-full object-cover border-4 border-purple-100 group-hover:border-scout-gold transition-all duration-300">
+                        <span class="absolute bottom-0 right-0 bg-scout-purple text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                            ${m.rank}
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-gray-900 text-lg leading-snug">${m.name}</h3>
+                    <p class="text-xs text-scout-purple font-semibold mt-1 bg-purple-50 px-2.5 py-1 rounded-md border border-purple-100">${m.bsid || 'BSID: পেন্ডিং'}</p>
+                    <div class="text-xs text-gray-500 mt-3 space-y-1 w-full border-t border-gray-100 pt-3">
+                        <p><i class="fa-solid fa-layer-group text-scout-gold mr-1"></i> ${m.unit || 'সাধারণ ইউনিট'}</p>
+                        ${m.phone ? `<p><i class="fa-solid fa-phone text-emerald-600 mr-1"></i> ${m.phone}</p>` : ''}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderPublicGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            gallery.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col group";
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden bg-gray-100">
+                        <img src="${item.photo}" alt="${item.caption}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <p class="text-sm font-semibold text-gray-800 leading-relaxed">${item.caption}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderPublicLeaders() {
+            const grid = document.getElementById('leadershipGrid');
+            grid.innerHTML = '';
+
+            leaders.forEach(l => {
+                const card = document.createElement('div');
+                card.className = "bg-purple-50 rounded-2xl p-6 border border-purple-100 shadow-sm flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left";
+                card.innerHTML = `
+                    <img src="${l.photo}" alt="${l.name}" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-md shrink-0">
+                    <div class="space-y-2 flex-1">
+                        <div>
+                            <h3 class="text-xl font-bold text-scout-purple">${l.name}</h3>
+                            <p class="text-xs font-bold text-amber-600 uppercase tracking-wider">${l.title}</p>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-2">
+                            <a href="tel:${l.phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-phone"></i> কল করুন
+                            </a>
+                            ${l.whatsapp ? `
+                            <a href="https://wa.me/${l.whatsapp}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                                <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপ
+                            </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ==================== APPLICATION FORM SUBMISSION ====================
+        async function handleMembershipSubmit(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('applicantName').value.trim();
+            const father = document.getElementById('applicantFather').value.trim();
+            const mother = document.getElementById('applicantMother').value.trim();
+            const dob = document.getElementById('applicantDob').value;
+            const phone = document.getElementById('applicantPhone').value.trim();
+            const bsid = document.getElementById('applicantBsid').value.trim();
+            const address = document.getElementById('applicantAddress').value.trim();
+            const fileInput = document.getElementById('applicantPhotoFile');
+
+            if (!fileInput.files || !fileInput.files[0]) {
+                showToast('আবেদনকারীর ফটো আপলোড করুন', 'error');
+                return;
+            }
+
+            try {
+                const photoBase64 = await fileToBase64(fileInput.files[0]);
+
+                const newApp = {
+                    id: 'APP-' + Date.now().toString().slice(-6),
+                    name, father, mother, dob, phone, bsid, address,
+                    photo: photoBase64,
+                    date: new Date().toLocaleDateString('bn-BD')
+                };
+
+                applications.push(newApp);
+                saveAllState();
+
+                // Reset Form
+                document.getElementById('membershipForm').reset();
+                document.getElementById('applicantPhotoPreview').src = "https://placehold.co/120x150/f1f5f9/64748b?text=Photo+Preview";
+
+                showToast('আপনার আবেদনটি সফলভাবে জমা হয়েছে! কর্তৃপক্ষ পর্যালোচনা করবে।', 'success');
+
+                // Option to view print replica right away
+                openA4PrintModal(newApp);
+            } catch (err) {
+                showToast('ছবি আপলোডে সমস্যা দেখা দিয়েছে', 'error');
+            }
+        }
+
+        // ==================== ADMIN AUTH & MODAL SYSTEM ====================
+        function toggleAdminModal(show) {
+            const modal = document.getElementById('adminLoginModal');
+            if (show) {
+                if (isAdminLoggedIn) {
+                    openAdminPanel();
+                } else {
+                    modal.classList.remove('hidden');
+                    document.getElementById('adminPasswordInput').focus();
+                }
+            } else {
+                modal.classList.add('hidden');
+                document.getElementById('loginErrorMsg').classList.add('hidden');
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById('adminPasswordInput').value;
+            const errBox = document.getElementById('loginErrorMsg');
+
+            if (inputPass === adminPassword) {
+                isAdminLoggedIn = true;
+                sessionStorage.setItem('durbar_admin_logged', 'true');
+                errBox.classList.add('hidden');
+                document.getElementById('adminPasswordInput').value = '';
+                toggleAdminModal(false);
+                updateAdminAuthUI();
+                openAdminPanel();
+                showToast('অ্যাডমিন লগইন সফল হয়েছে!', 'success');
+            } else {
+                errBox.innerText = 'ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।';
+                errBox.classList.remove('hidden');
+            }
+        }
+
+        function checkAdminSession() {
+            if (sessionStorage.getItem('durbar_admin_logged') === 'true') {
+                isAdminLoggedIn = true;
+            }
+            updateAdminAuthUI();
+        }
+
+        function updateAdminAuthUI() {
+            const loginBtn = document.getElementById('adminLoginTriggerBtn');
+            const panelBtn = document.getElementById('adminPanelOpenBtn');
+
+            if (isAdminLoggedIn) {
+                loginBtn.classList.add('hidden');
+                panelBtn.classList.remove('hidden');
+            } else {
+                loginBtn.classList.remove('hidden');
+                panelBtn.classList.add('hidden');
+            }
+        }
+
+        function handleAdminLogout() {
+            isAdminLoggedIn = false;
+            sessionStorage.removeItem('durbar_admin_logged');
+            closeAdminPanel();
+            updateAdminAuthUI();
+            showToast('লগআউট করা হয়েছে', 'info');
+        }
+
+        function openAdminPanel() {
+            if (!isAdminLoggedIn) {
+                toggleAdminModal(true);
+                return;
+            }
+            document.getElementById('adminPanelModal').classList.remove('hidden');
+            renderAdminAllTabs();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').classList.add('hidden');
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        }
+
+
+        // ==================== ADMIN PANEL DASHBOARD CONTROLS ====================
+        function switchAdminTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            // Deactivate all tab buttons
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-scout-purple', 'text-white');
+                btn.classList.add('text-gray-600', 'hover:bg-purple-50');
+            });
+
+            // Show active tab
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+            if (activeBtn) {
+                activeBtn.classList.add('bg-scout-purple', 'text-white');
+                activeBtn.classList.remove('text-gray-600', 'hover:bg-purple-50');
+            }
+        }
+
+        function renderAdminAllTabs() {
+            // Populate Tab 1 Inputs
+            document.getElementById('adminSiteTitle').value = siteInfo.title;
+            document.getElementById('adminSiteSubtitle').value = siteInfo.subtitle;
+            document.getElementById('adminSiteMotto').value = siteInfo.motto;
+            document.getElementById('adminNoticeText').value = siteInfo.notice;
+            document.getElementById('adminAboutText').value = siteInfo.about;
+            document.getElementById('adminLogoPreview').src = siteInfo.logo;
+            document.getElementById('adminCoverPreview').src = siteInfo.cover;
+
+            // Render Tab 2 Applications
+            renderAdminApplications();
+
+            // Render Tab 3 Roster
+            renderAdminRosterTable();
+
+            // Render Tab 4 Gallery
+            renderAdminGalleryGrid();
+
+            // Render Tab 5 Leaders
+            renderAdminLeadersList();
+
+            // Activate initial tab styling
+            switchAdminTab('tabBranding');
+        }
+
+        // --- TAB 1: SAVE BRANDING ---
+        async function saveSiteBranding(e) {
+            e.preventDefault();
+            siteInfo.title = document.getElementById('adminSiteTitle').value.trim();
+            siteInfo.subtitle = document.getElementById('adminSiteSubtitle').value.trim();
+            siteInfo.motto = document.getElementById('adminSiteMotto').value.trim();
+            siteInfo.notice = document.getElementById('adminNoticeText').value.trim();
+            siteInfo.about = document.getElementById('adminAboutText').value.trim();
+
+            const logoInput = document.getElementById('adminLogoFileInput');
+            if (logoInput.files && logoInput.files[0]) {
+                siteInfo.logo = await fileToBase64(logoInput.files[0]);
+            }
+
+            const coverInput = document.getElementById('adminCoverFileInput');
+            if (coverInput.files && coverInput.files[0]) {
+                siteInfo.cover = await fileToBase64(coverInput.files[0]);
+            }
+
+            saveAllState();
+            renderAllPublicContent();
+            showToast('ব্র্যান্ডিং তথ্য সেভ হয়েছে!', 'success');
+        }
+
+        // --- TAB 2: APPLICATIONS MANAGER ---
+        function renderAdminApplications() {
+            const list = document.getElementById('adminApplicationsList');
+            const badge = document.getElementById('pendingBadge');
+            badge.innerText = applications.length;
+
+            list.innerHTML = '';
+            if (applications.length === 0) {
+                list.innerHTML = `<p class="text-center py-8 text-gray-500 font-medium">কোনো পেন্ডিং আবেদন নেই।</p>`;
+                return;
+            }
+
+            applications.forEach((app, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border border-gray-200 rounded-2xl p-4 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <img src="${app.photo}" alt="${app.name}" class="w-16 h-20 object-cover rounded-lg border border-gray-300">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-gray-900 text-lg">${app.name}</h4>
+                            <p class="text-xs text-gray-600">পিতা: ${app.father} | মাতা: ${app.mother}</p>
+                            <p class="text-xs text-gray-600">ফোন: <span class="font-semibold text-purple-900">${app.phone}</span> | জন্ম তারিখ: ${app.dob}</p>
+                            <p class="text-xs text-scout-purple font-semibold">আবেদন তারিখ: ${app.date} ${app.bsid ? `| BSID: ${app.bsid}` : ''}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0">
+                        <button onclick="approveApplication(${idx})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-check"></i> অনুমোদন করুন
+                        </button>
+                        <button onclick="openA4PrintModalByIndex(${idx})" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-print"></i> A4 প্রিন্ট
+                        </button>
+                        <button onclick="rejectApplication(${idx})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-trash"></i> বাতিল
+                        </button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function approveApplication(index) {
+            const app = applications[index];
+            const autoBsid = app.bsid || ('BSID-' + Math.floor(100000 + Math.random() * 900000));
+
+            // Add to roster
+            members.push({
+                id: 'm-' + Date.now(),
+                name: app.name,
+                bsid: autoBsid,
+                rank: 'Scout Member',
+                unit: 'নতুন সদস্য ইউনিট',
+                phone: app.phone,
+                photo: app.photo
+            });
+
+            // Remove from applications
+            applications.splice(index, 1);
+            saveAllState();
+
+            renderAdminApplications();
+            renderAdminRosterTable();
+            renderPublicRoster();
+            showToast(`${app.name}-এর সদস্যপদ অনুমোদন করা হয়েছে!`, 'success');
+        }
+
+        function rejectApplication(index) {
+            if (confirm('আপনি কি এই আবেদনটি মুছে ফেলতে চান?')) {
+                applications.splice(index, 1);
+                saveAllState();
+                renderAdminApplications();
+                showToast('আবেদনটি বাতিল করা হয়েছে', 'info');
+            }
+        }
+
+        // --- TAB 3: ROSTER MANAGER (CRUD) ---
+        async function handleSaveRosterMember(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editMemberId').value;
+            const name = document.getElementById('mName').value.trim();
+            const bsid = document.getElementById('mBsid').value.trim();
+            const rank = document.getElementById('mRank').value;
+            const unit = document.getElementById('mUnit').value.trim();
+            const phone = document.getElementById('mPhone').value.trim();
+            const fileInput = document.getElementById('mPhotoFile');
+
+            let photo = "https://placehold.co/300x300/f1f5f9/64748b?text=Scout";
+
+            if (editId) {
+                const existing = members.find(m => m.id === editId);
+                if (existing) photo = existing.photo;
+            }
+
+            if (fileInput.files && fileInput.files[0]) {
+                photo = await fileToBase64(fileInput.files[0]);
+            }
+
+            if (editId) {
+                // Update
+                const idx = members.findIndex(m => m.id === editId);
+                if (idx !== -1) {
+                    members[idx] = { id: editId, name, bsid, rank, unit, phone, photo };
+                    showToast('সদস্যের তথ্য সংশোধিত হয়েছে', 'success');
+                }
+            } else {
+                // Create
+                members.push({
+                    id: 'm-' + Date.now(),
+                    name, bsid, rank, unit, phone, photo
+                });
+                showToast('নতুন সদস্য যুক্ত হয়েছে', 'success');
+            }
+
+            saveAllState();
+            resetRosterForm();
+            renderAdminRosterTable();
+            renderPublicRoster();
+        }
+
+        function editRosterMember(id) {
+            const m = members.find(item => item.id === id);
+            if (!m) return;
+
+            document.getElementById('editMemberId').value = m.id;
+            document.getElementById('mName').value = m.name;
+            document.getElementById('mBsid').value = m.bsid;
+            document.getElementById('mRank').value = m.rank;
+            document.getElementById('mUnit').value = m.unit || '';
+            document.getElementById('mPhone').value = m.phone || '';
+            document.getElementById('mPhotoPreview').src = m.photo;
+            document.getElementById('rosterFormHeading').innerText = 'সদস্যের তথ্য সম্পাদনা করুন';
+        }
+
+        function deleteRosterMember(id) {
+            if (confirm('আপনি কি এই সদস্যকে তালিকা থেকে মুছে ফেলতে চান?')) {
+                members = members.filter(m => m.id !== id);
+                saveAllState();
+                renderAdminRosterTable();
+                renderPublicRoster();
+                showToast('সদস্য মুছে ফেলা হয়েছে', 'info');
+            }
+        }
+
+        function resetRosterForm() {
+            document.getElementById('addRosterMemberForm').reset();
+            document.getElementById('editMemberId').value = '';
+            document.getElementById('mPhotoPreview').src = "https://placehold.co/100x100/f1f5f9/64748b?text=Preview";
+            document.getElementById('rosterFormHeading').innerText = 'নতুন সদস্য যোগ করুন';
+        }
+
+        function renderAdminRosterTable() {
+            const tbody = document.getElementById('adminRosterTableBody');
+            tbody.innerHTML = '';
+
+            members.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <img src="${m.photo}" class="w-10 h-10 rounded-full object-cover border">
+                    </td>
+                    <td class="p-3 font-bold text-gray-800">${m.name}</td>
+                    <td class="p-3 text-scout-purple font-semibold">${m.bsid}</td>
+                    <td class="p-3"><span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded font-semibold">${m.rank}</span></td>
+                    <td class="p-3">${m.phone || '-'}</td>
+                    <td class="p-3 text-right space-x-2">
+                        <button onclick="editRosterMember('${m.id}')" class="text-blue-600 hover:text-blue-800 font-bold text-xs bg-blue-50 px-2 py-1 rounded">
+                            <i class="fa-solid fa-pen"></i> এডিট
+                        </button>
+                        <button onclick="deleteRosterMember('${m.id}')" class="text-red-600 hover:text-red-800 font-bold text-xs bg-red-50 px-2 py-1 rounded">
+                            <i class="fa-solid fa-trash"></i> ডিলিট
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- TAB 4: GALLERY MANAGER ---
+        async function handleGalleryUpload(e) {
+            e.preventDefault();
+            const caption = document.getElementById('gCaption').value.trim();
+            const fileInput = document.getElementById('gPhotoFile');
+
+            if (!fileInput.files || !fileInput.files[0]) {
+                showToast('ছবি সিলেক্ট করুন', 'error');
+                return;
+            }
+
+            try {
+                const photoBase64 = await fileToBase64(fileInput.files[0]);
+                gallery.unshift({
+                    id: 'g-' + Date.now(),
+                    caption,
+                    photo: photoBase64
+                });
+
+                saveAllState();
+                document.getElementById('gCaption').value = '';
+                fileInput.value = '';
+                document.getElementById('gPhotoPreview').src = "https://placehold.co/150x100/f1f5f9/64748b?text=Preview";
+
+                renderAdminGalleryGrid();
+                renderPublicGallery();
+                showToast('গ্যালারিতে ফটো যোগ হয়েছে!', 'success');
+            } catch (err) {
+                showToast('ফটো আপলোডে সমস্যা হয়েছে', 'error');
+            }
+        }
+
+        function deleteGalleryPhoto(id) {
+            if (confirm('এই ছবিটি গ্যালারি থেকে মুছে ফেলবেন?')) {
+                gallery = gallery.filter(item => item.id !== id);
+                saveAllState();
+                renderAdminGalleryGrid();
+                renderPublicGallery();
+                showToast('ছবি মুছে ফেলা হয়েছে', 'info');
+            }
+        }
+
+        function renderAdminGalleryGrid() {
+            const grid = document.getElementById('adminGalleryGrid');
+            grid.innerHTML = '';
+
+            gallery.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "relative rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm group";
+                card.innerHTML = `
+                    <img src="${item.photo}" class="w-full h-32 object-cover">
+                    <div class="p-2 text-xs font-semibold text-gray-700 truncate">${item.caption}</div>
+                    <button onclick="deleteGalleryPhoto('${item.id}')" class="absolute top-2 right-2 bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs opacity-90 hover:opacity-100 shadow">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- TAB 5: LEADERS MANAGER ---
+        function renderAdminLeadersList() {
+            const container = document.getElementById('adminLeadersList');
+            container.innerHTML = '';
+
+            leaders.forEach((l, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 p-4 sm:p-6 rounded-2xl border border-gray-200 space-y-4";
+                card.innerHTML = `
+                    <h4 class="font-bold text-gray-800 text-base border-b pb-2">লিডার #${idx + 1}: ${l.name}</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">লিডারের নাম</label>
+                            <input type="text" value="${l.name}" onchange="updateLeaderField(${idx}, 'name', this.value)" class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">পদবী</label>
+                            <input type="text" value="${l.title}" onchange="updateLeaderField(${idx}, 'title', this.value)" class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">ফোন নম্বর</label>
+                            <input type="text" value="${l.phone}" onchange="updateLeaderField(${idx}, 'phone', this.value)" class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">WhatsApp নম্বর (যেমন: 88017XXXXXXXX)</label>
+                            <input type="text" value="${l.whatsapp || ''}" onchange="updateLeaderField(${idx}, 'whatsapp', this.value)" class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 pt-2">
+                        <img id="leaderPrevImg_${idx}" src="${l.photo}" class="w-12 h-12 object-cover rounded-full border">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">ছবি পরিবর্তন করুন (Direct Upload)</label>
+                            <input type="file" accept="image/*" onchange="uploadLeaderPhoto(${idx}, this)" class="text-xs text-gray-500">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateLeaderField(index, field, value) {
+            leaders[index][field] = value.trim();
+            saveAllState();
+            renderPublicLeaders();
+            showToast('নেতৃত্বের তথ্য সেভ হয়েছে!', 'success');
+        }
+
+        async function uploadLeaderPhoto(index, input) {
+            if (input.files && input.files[0]) {
+                const base64 = await fileToBase64(input.files[0]);
+                leaders[index].photo = base64;
+                saveAllState();
+                renderAdminLeadersList();
+                renderPublicLeaders();
+                showToast('ছবি পরিবর্তিত হয়েছে!', 'success');
+            }
+        }
+
+        // --- TAB 6: SETTINGS ---
+        function handlePasswordChange(e) {
+            e.preventDefault();
+            const curr = document.getElementById('currPassInput').value;
+            const newP = document.getElementById('newPassInput').value;
+
+            if (curr !== adminPassword) {
+                showToast('বর্তমান পাসওয়ার্ড ভুল!', 'error');
+                return;
+            }
+
+            adminPassword = newP;
+            saveAllState();
+            document.getElementById('currPassInput').value = '';
+            document.getElementById('newPassInput').value = '';
+            showToast('অ্যাডমিন পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!', 'success');
+        }
+
+        // ==================== PRINTABLE A4 REPLICA SYSTEM ====================
+        function openA4PrintModal(appData) {
+            document.getElementById('printLogo').src = siteInfo.logo;
+            document.getElementById('printSiteTitle').innerText = siteInfo.title;
+            document.getElementById('printSiteSubtitle').innerText = siteInfo.subtitle;
+
+            document.getElementById('printApplicantPhoto').src = appData.photo;
+            document.getElementById('printAppId').innerText = '#' + (appData.id || 'N/A');
+            document.getElementById('printAppDate').innerText = appData.date || new Date().toLocaleDateString('bn-BD');
+
+            document.getElementById('printName').innerText = appData.name;
+            document.getElementById('printFather').innerText = appData.father;
+            document.getElementById('printMother').innerText = appData.mother;
+            document.getElementById('printDob').innerText = appData.dob;
+            document.getElementById('printPhone').innerText = appData.phone;
+            document.getElementById('printBsid').innerText = appData.bsid || 'পেন্ডিং';
+            document.getElementById('printAddress').innerText = appData.address;
+
+            document.getElementById('a4PrintModal').classList.remove('hidden');
+        }
+
+        function openA4PrintModalByIndex(index) {
+            if (applications[index]) {
+                openA4PrintModal(applications[index]);
+            }
+        }
+
+        function closeA4PrintModal() {
+            document.getElementById('a4PrintModal').classList.add('hidden');
+        }
+
+        // ==================== NAVIGATION & TOAST UTILITIES ====================
+        function toggleMobileNav() {
+            const menu = document.getElementById('mobileNav');
+            menu.classList.toggle('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-gray-800 text-white";
+            let iconClass = "fa-circle-info";
+
+            if (type === 'success') {
+                bgClass = "bg-emerald-600 text-white";
+                iconClass = "fa-circle-check";
+            } else if (type === 'error') {
+                bgClass = "bg-red-600 text-white";
+                iconClass = "fa-triangle-exclamation";
+            }
+
+            toast.className = `pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-xl shadow-xl text-sm font-semibold transition-all transform translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
