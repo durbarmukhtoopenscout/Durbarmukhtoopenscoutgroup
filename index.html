@@ -227,11 +227,12 @@
             </div>
         </section>
 
-        <!-- Contact & Leadership -->
+        <!-- Contact & Senior Leadership -->
         <section id="contact" class="py-12 bg-white px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
-                    <h3 class="text-2xl md:text-3xl font-bold text-scoutNavy">দায়িত্বপ্রাপ্ত ব্যক্তিবর্গ ও যোগাযোগ</h3>
+                    <h3 class="text-2xl md:text-3xl font-bold text-scoutNavy">উচ্চপদস্থ পরিচালনা পর্ষদ ও যোগাযোগ</h3>
+                    <p class="text-gray-600 text-sm mt-1">দূর্বার মুক্ত স্কাউট দলের সিনিয়র লিডারশিপ ও দায়িত্বপ্রাপ্ত কর্মকর্তা</p>
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
                 <div id="leadersGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto"></div>
@@ -261,7 +262,8 @@
             </div>
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <div>
-                    <input type="password" id="adminPassword" placeholder="অ্যাডমিন পাসওয়ার্ড (durbar123)" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
+                    <!-- Removed password hint from placeholder -->
+                    <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড লিখুন" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
                     <p id="loginError" class="text-xs text-red-500 mt-1 hidden">ভুল পাসওয়ার্ড!</p>
                 </div>
                 <button type="submit" class="w-full bg-scoutGreen hover:bg-scoutGreenDark text-white font-bold py-2.5 rounded-lg transition">লগইন করুন</button>
@@ -287,7 +289,7 @@
                 <button onclick="switchAdminTab('roster')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">মেম্বারশিপ পরিচালনা</button>
                 <button onclick="switchAdminTab('applications')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">আবেদনসমূহ (<span id="appBadge">0</span>)</button>
                 <button onclick="switchAdminTab('galleryTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">অ্যাক্টিভিটি গ্যালারি (ক্যাপশনসহ)</button>
-                <button onclick="switchAdminTab('leadersTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">লিডার তথ্য</button>
+                <button onclick="switchAdminTab('leadersTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">সিনিয়র লিডারগণ</button>
             </div>
 
             <div class="flex-grow p-6 overflow-y-auto space-y-6">
@@ -337,7 +339,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">পদবি (Rank) *</label>
-                                <input type="text" id="mRank" placeholder="যেমন: স্কাউট লিডার / মেম্বার" class="w-full border rounded-lg p-2 text-sm">
+                                <input type="text" id="mRank" placeholder="যেমন: স্কাউট সদস্য / মেম্বার" class="w-full border rounded-lg p-2 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">বিএসআইডি (BSID)</label>
@@ -389,10 +391,39 @@
                     <div id="adminGalleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
                 </div>
 
-                <!-- 5. Leaders Tab -->
-                <div id="leadersTabContent" class="tabContent hidden space-y-4">
-                    <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">প্রধান লিডারদের তথ্য ম্যানেজ</h4>
-                    <div id="adminLeadersList" class="space-y-4"></div>
+                <!-- 5. Senior Leaders Roster Tab (Fully Dynamic Add/Edit/Remove/Photo) -->
+                <div id="leadersTabContent" class="tabContent hidden space-y-6">
+                    <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
+                        <h5 id="leaderFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-user-shield text-scoutGreen mr-2"></i>সিনিয়র লিডার / উচ্চপদস্থ কর্মকর্তা যোগ বা আপডেট করুন</h5>
+                        <input type="hidden" id="editLeaderIndex" value="-1">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">লিডারের পূর্ণ নাম *</label>
+                                <input type="text" id="lName" placeholder="যেমন: সুলতান সাইফ নিরব" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">উচ্চ পদবি (Role/Designation) *</label>
+                                <input type="text" id="lRole" placeholder="যেমন: স্কাউট লিডার / সভাপতি" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">মোবাইল / হোয়াটসঅ্যাপ নম্বর *</label>
+                                <input type="tel" id="lPhone" placeholder="01700000000" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">প্রোফাইল ছবি (গ্যালারি থেকে নির্বাচন করুন)</label>
+                            <input type="file" id="lPhotoFile" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-1.5 bg-white">
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="saveLeader()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
+                            <button onclick="resetLeaderForm()" class="bg-gray-400 text-white font-bold px-4 py-2 rounded-lg text-xs">রিসেট</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-gray-800 text-md">বর্তমান সিনিয়র লিডারদের তালিকা</h5>
+                        <div id="adminLeadersList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden"></div>
+                    </div>
                 </div>
 
             </div>
@@ -512,10 +543,10 @@
 
             document.getElementById('leadersGrid').innerHTML = (appData.leaders || []).map(leader => `
                 <div class="bg-gray-50 border rounded-xl p-4 flex items-center gap-4 shadow-sm">
-                    <img src="${leader.photo}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGreen">
+                    <img src="${leader.photo || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGreen">
                     <div>
                         <h4 class="font-bold text-gray-800">${leader.name}</h4>
-                        <p class="text-xs text-scoutGreen font-medium">${leader.role}</p>
+                        <p class="text-xs text-scoutGreen font-semibold">${leader.role}</p>
                         <div class="flex gap-3 mt-2 text-xs">
                             <a href="tel:${leader.phone}" class="text-blue-600 font-bold"><i class="fa-solid fa-phone"></i> কল করুন</a>
                             <a href="https://wa.me/88${leader.phone}" target="_blank" class="text-green-600 font-bold"><i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপ</a>
@@ -634,6 +665,7 @@
             document.getElementById('inputNotice').value = appData.notice;
             document.getElementById('toggleNoticeShow').checked = appData.showNotice;
 
+            // Members List Admin
             const adminMemberList = document.getElementById('adminMemberList');
             adminMemberList.innerHTML = (appData.members || []).map((m, idx) => `
                 <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
@@ -651,6 +683,7 @@
                 </div>
             `).join('');
 
+            // Applications List Admin
             const appList = document.getElementById('pendingAppsList');
             if (!appData.applications || appData.applications.length === 0) {
                 appList.innerHTML = `<p class="text-gray-500 text-sm italic">কোনো আবেদন নেই।</p>`;
@@ -673,6 +706,7 @@
                 `).join('');
             }
 
+            // Gallery Admin Grid
             document.getElementById('adminGalleryGrid').innerHTML = (appData.gallery || []).map((g, idx) => {
                 const imgSrc = typeof g === 'string' ? g : g.img;
                 const captionText = typeof g === 'string' ? 'ক্যাপশন নেই' : (g.caption || 'ক্যাপশন নেই');
@@ -687,13 +721,19 @@
                 `;
             }).join('');
 
+            // Leaders Admin List (Senior Roster)
             document.getElementById('adminLeadersList').innerHTML = (appData.leaders || []).map((l, idx) => `
-                <div class="border p-3 rounded-lg flex flex-col md:flex-row gap-3 items-center">
-                    <img src="${l.photo}" class="w-12 h-12 rounded-full object-cover border">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 w-full">
-                        <input type="text" value="${l.name}" onchange="updateLeader(${idx}, 'name', this.value)" class="border p-1.5 rounded text-xs" placeholder="নাম">
-                        <input type="text" value="${l.role}" onchange="updateLeader(${idx}, 'role', this.value)" class="border p-1.5 rounded text-xs" placeholder="পদবি">
-                        <input type="text" value="${l.phone}" onchange="updateLeader(${idx}, 'phone', this.value)" class="border p-1.5 rounded text-xs" placeholder="ফোন">
+                <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <img src="${l.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border border-scoutGreen">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">${l.name}</p>
+                            <p class="text-xs text-scoutGreen font-semibold">${l.role} | 📞 ${l.phone}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editLeader(${idx})" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
+                        <button onclick="removeLeader(${idx})" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
                     </div>
                 </div>
             `).join('');
@@ -763,6 +803,68 @@
             }
         }
 
+        // --- Senior Leaders CRUD Operations ---
+        async function saveLeader() {
+            const idx = parseInt(document.getElementById('editLeaderIndex').value);
+            const name = document.getElementById('lName').value.trim();
+            const role = document.getElementById('lRole').value.trim();
+            const phone = document.getElementById('lPhone').value.trim();
+            const photoFile = document.getElementById('lPhotoFile').files;
+
+            if (!name || !role || !phone) {
+                alert("দয়া করে লিডারের নাম, পদবি এবং ফোন নম্বর দিন!");
+                return;
+            }
+
+            if (!appData.leaders) appData.leaders = [];
+
+            let photo = idx >= 0 ? appData.leaders[idx].photo : "https://via.placeholder.com/150";
+            if (photoFile.length > 0) {
+                photo = await readFileAsBase64(photoFile[0]);
+            }
+
+            const leaderObj = { name, role, phone, photo };
+
+            if (idx >= 0) {
+                appData.leaders[idx] = leaderObj;
+            } else {
+                appData.leaders.push(leaderObj);
+            }
+
+            await saveData();
+            renderUI();
+            populateAdminData();
+            resetLeaderForm();
+            alert("সিনিয়র লিডারের তথ্য ফায়ারবেসে সফলভাবে সেভ হয়েছে!");
+        }
+
+        function editLeader(idx) {
+            const l = appData.leaders[idx];
+            document.getElementById('editLeaderIndex').value = idx;
+            document.getElementById('lName').value = l.name;
+            document.getElementById('lRole').value = l.role;
+            document.getElementById('lPhone').value = l.phone;
+            document.getElementById('leaderFormTitle').innerText = "লিডারের তথ্য আপডেট করুন (" + l.name + ")";
+        }
+
+        function resetLeaderForm() {
+            document.getElementById('editLeaderIndex').value = "-1";
+            document.getElementById('lName').value = "";
+            document.getElementById('lRole').value = "";
+            document.getElementById('lPhone').value = "";
+            document.getElementById('lPhotoFile').value = "";
+            document.getElementById('leaderFormTitle').innerText = "সিনিয়র লিডার / উচ্চপদস্থ কর্মকর্তা যোগ বা আপডেট করুন";
+        }
+
+        async function removeLeader(idx) {
+            if (confirm("এই লিডারকে তালিকা থেকে বাদ দিতে চান?")) {
+                appData.leaders.splice(idx, 1);
+                await saveData();
+                renderUI();
+                populateAdminData();
+            }
+        }
+
         async function saveBranding() {
             appData.title = document.getElementById('inputHeroTitle').value;
             appData.motto = document.getElementById('inputMotto').value;
@@ -811,12 +913,6 @@
             await saveData();
             renderUI();
             populateAdminData();
-        }
-
-        async function updateLeader(idx, field, val) {
-            appData.leaders[idx][field] = val;
-            await saveData();
-            renderUI();
         }
 
         async function approveApp(idx) {
