@@ -409,12 +409,13 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- Application Script with Enhanced Persistence Sync Engine -->
+    <!-- Application Script with Public JSONBin Sync -->
     <script>
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
         
-        const JSONBIN_BIN_ID = "6adbcd03ac6210605a4d44eb";
+        // Public JSONBin Integration
+        const JSONBIN_BIN_ID = "6adbd334ffd5d160538703be";
         const JSONBIN_MASTER_KEY = "$2a$10$iS.S1lzqxnJCTVK65quxVO6MDS7tZPWRt9eYwVINFrO0TGlmrgnJ.";
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
         const LOCAL_STORAGE_BACKUP = "DURBAR_SCOUT_LOCAL_CACHE";
@@ -444,14 +445,13 @@
 
         let appData = defaultData;
 
-        // Smart Loader Logic
+        // Fetch Data from Global Public Bin
         async function loadData() {
             let loadedFromCloud = false;
             try {
                 const response = await fetch(`${JSONBIN_URL}/latest`, {
                     method: 'GET',
                     headers: {
-                        'X-Master-Key': JSONBIN_MASTER_KEY,
                         'X-Bin-Meta': 'false'
                     }
                 });
@@ -479,7 +479,7 @@
             document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // Smart Save Engine (Sync both Cloud & Local Cache)
+        // Save Data to Global Public Bin
         async function saveData() {
             localStorage.setItem(LOCAL_STORAGE_BACKUP, JSON.stringify(appData));
             try {
