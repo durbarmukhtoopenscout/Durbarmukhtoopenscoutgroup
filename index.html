@@ -409,16 +409,16 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- Application Script with Public JSONBin Sync -->
+    <!-- Application Script with Chrome-Compatible Cloud Sync -->
     <script>
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
         
-        // Public JSONBin Integration
+        // Public JSONBin Config with Cross-Browser Protocol
         const JSONBIN_BIN_ID = "6adbd334ffd5d160538703be";
         const JSONBIN_MASTER_KEY = "$2a$10$iS.S1lzqxnJCTVK65quxVO6MDS7tZPWRt9eYwVINFrO0TGlmrgnJ.";
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-        const LOCAL_STORAGE_BACKUP = "DURBAR_SCOUT_LOCAL_CACHE";
+        const LOCAL_STORAGE_BACKUP = "DURBAR_SCOUT_LOCAL_CACHE_V3";
 
         let defaultData = {
             logo: "https://via.placeholder.com/150?text=Logo",
@@ -445,13 +445,16 @@
 
         let appData = defaultData;
 
-        // Fetch Data from Global Public Bin
+        // Universal Loader (Edge + Chrome + Mobile)
         async function loadData() {
             let loadedFromCloud = false;
             try {
-                const response = await fetch(`${JSONBIN_URL}/latest`, {
+                // Cache-busting URL parameter added to bypass Chrome stale cache
+                const timestamp = new Date().getTime();
+                const response = await fetch(`${JSONBIN_URL}/latest?t=${timestamp}`, {
                     method: 'GET',
                     headers: {
+                        'X-Master-Key': JSONBIN_MASTER_KEY,
                         'X-Bin-Meta': 'false'
                     }
                 });
@@ -465,7 +468,7 @@
                     }
                 }
             } catch (e) {
-                console.warn("Cloud Read Fallback: Using cache", e);
+                console.warn("Cloud Read Error, switching to local cache", e);
             }
 
             if (!loadedFromCloud) {
@@ -479,11 +482,11 @@
             document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // Save Data to Global Public Bin
+        // Universal Saver (Cross-Browser Supported)
         async function saveData() {
             localStorage.setItem(LOCAL_STORAGE_BACKUP, JSON.stringify(appData));
             try {
-                await fetch(JSONBIN_URL, {
+                const response = await fetch(JSONBIN_URL, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -491,6 +494,12 @@
                     },
                     body: JSON.stringify(appData)
                 });
+                
+                if (response.ok) {
+                    console.log("Global Sync Successful");
+                } else {
+                    console.error("Cloud Save HTTP Error:", response.status);
+                }
             } catch(e) {
                 console.error("Cloud Save Failed", e);
             }
