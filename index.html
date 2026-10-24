@@ -548,19 +548,28 @@
         }
 
         function renderUI() {
-            const b = appData.branding;
-            document.getElementById('headerLogo').src = b.logo;
-            document.getElementById('headerTitle').innerText = b.title;
-            document.getElementById('headerSubtitle').innerText = b.subtitle;
-            document.getElementById('heroTitle').innerText = b.title;
-            document.getElementById('heroSubtitle').innerText = b.subtitle;
-            document.getElementById('heroMotto').innerText = `"${b.motto}"`;
-            document.getElementById('heroBg').style.backgroundImage = `url('${b.heroBg}')`;
+            const b = appData.branding || {};
+            
+            // Fixed Undefined Fallback Bug
+            const titleText = b.title || "দূর্বার মুক্ত স্কাউট দল, বড়লেখা";
+            const subtitleText = b.subtitle || "বড়লেখা, মৌলভীবাজার";
+            const logoSrc = b.logo || "https://via.placeholder.com/150?text=Logo";
+            const mottoText = b.motto || "সেবা";
+
+            document.getElementById('headerLogo').src = logoSrc;
+            document.getElementById('headerTitle').innerText = titleText;
+            document.getElementById('headerSubtitle').innerText = subtitleText;
+            document.getElementById('heroTitle').innerText = titleText;
+            document.getElementById('heroSubtitle').innerText = subtitleText;
+            document.getElementById('heroMotto').innerText = `"${mottoText}"`;
+            if (b.heroBg) {
+                document.getElementById('heroBg').style.backgroundImage = `url('${b.heroBg}')`;
+            }
             
             const noticeTicker = document.getElementById('noticeTicker');
             if (b.showNotice) {
                 noticeTicker.classList.remove('hidden');
-                document.getElementById('noticeText').innerText = b.notice;
+                document.getElementById('noticeText').innerText = b.notice || "বাংলাদেশ স্কাউটস আইডি (BSID) সংক্রান্ত তথ্যের জন্য অনতিবিলম্বে যোগাযোগ করুন।";
             } else {
                 noticeTicker.classList.add('hidden');
             }
@@ -860,13 +869,13 @@
 
         async function saveBranding() {
             const branding = {
-                logo: appData.branding.logo,
-                heroBg: appData.branding.heroBg,
-                title: document.getElementById('inputHeroTitle').value,
-                motto: document.getElementById('inputMotto').value,
-                notice: document.getElementById('inputNotice').value,
+                logo: appData.branding.logo || "https://via.placeholder.com/150?text=Logo",
+                heroBg: appData.branding.heroBg || "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+                title: document.getElementById('inputHeroTitle').value || "দূর্বার মুক্ত স্কাউট দল, বড়লেখা",
+                motto: document.getElementById('inputMotto').value || "সেবা",
+                notice: document.getElementById('inputNotice').value || "বাংলাদেশ স্কাউটস আইডি (BSID) সংক্রান্ত তথ্যের জন্য অনতিবিলম্বে যোগাযোগ করুন।",
                 showNotice: document.getElementById('toggleNoticeShow').checked,
-                subtitle: appData.branding.subtitle
+                subtitle: "বড়লেখা, মৌলভীবাজার"
             };
 
             await fetch(`${FIREBASE_BASE_URL}/branding.json`, {
@@ -1205,7 +1214,7 @@
         function readFileAsBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = () => resolve(resolve.result);
+                reader.onload = () => resolve(reader.result);
                 reader.onerror = error => reject(error);
                 reader.readAsDataURL(file);
             });
