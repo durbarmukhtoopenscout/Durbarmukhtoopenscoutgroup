@@ -214,10 +214,11 @@
                         </div>
                     </div>
 
+                    <!-- BS ID Field with BS- Prefix -->
                     <div>
                         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">বাংলাদেশ স্কাউটস আইডি - BS ID (যদি থাকে)</label>
                         <div class="flex items-center">
-                            <span class="bg-gray-100 border border-r-0 rounded-l-lg p-2.5 text-sm text-gray-600 font-bold select-none">BX-</span>
+                            <span class="bg-gray-100 border border-r-0 rounded-l-lg p-2.5 text-sm text-gray-600 font-bold select-none">BS-</span>
                             <input type="text" id="applicantBsidNum" placeholder="যেমন: 12345" class="w-full border rounded-r-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
                         </div>
                         <p class="text-[11px] text-gray-500 mt-1">BS ID থাকলে নম্বরটি লিখুন। না থাকলে ফাঁকা রাখুন।</p>
@@ -335,7 +336,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">বিএসআইডি (BSID)</label>
-                                <input type="text" id="mBsid" placeholder="BX-XXXXX" class="w-full border rounded-lg p-2 text-sm">
+                                <input type="text" id="mBsid" placeholder="BS-XXXXX" class="w-full border rounded-lg p-2 text-sm">
                             </div>
                         </div>
                         <div>
@@ -549,7 +550,6 @@
         function renderUI() {
             const b = appData.branding || {};
             
-            // Fixed Undefined Display Bug
             const titleText = b.title || "দূর্বার মুক্ত স্কাউট দল, বড়লেখা";
             const subtitleText = b.subtitle || "বড়লেখা, মৌলভীবাজার";
             const logoSrc = b.logo || "https://via.placeholder.com/150?text=Logo";
@@ -662,8 +662,8 @@
                 return;
             }
 
-            if (bsid && !bsid.toUpperCase().startsWith('BX-')) {
-                bsid = 'BX-' + bsid;
+            if (bsid && !bsid.toUpperCase().startsWith('BS-')) {
+                bsid = 'BS-' + bsid;
             }
 
             btn.disabled = true;
@@ -938,7 +938,7 @@
             populateAdminData();
         }
 
-        // Online Application Submit Logic (BS ID BX- Processing)
+        // Online Application Submit Logic (BS ID BS- Processing)
         async function submitApplication(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -954,7 +954,7 @@
             let rawBsid = document.getElementById('applicantBsidNum').value.trim();
             let finalBsid = "";
             if (rawBsid !== "") {
-                finalBsid = rawBsid.toUpperCase().startsWith('BX-') ? rawBsid : 'BX-' + rawBsid;
+                finalBsid = rawBsid.toUpperCase().startsWith('BS-') ? rawBsid : 'BS-' + rawBsid;
             }
 
             const appPayload = {
@@ -1144,15 +1144,15 @@
             }).join('');
         }
 
-        // Auto Member Approval Logic (Transfer Name, Photo & BSID)
+        // Auto Member Approval Logic (Transfer Name, Photo & BSID with BS- Prefix)
         async function approveApp(key) {
             const app = appData.applications[key];
             let bsid = app.bsid || '';
 
             if (!bsid) {
-                const inputBsid = prompt("আবেদনকারী ফর্ম-এ BSID দেননি। অনুগ্রহ করে নির্ধারণ করুন:", "BX-" + Math.floor(10000 + Math.random() * 90000));
+                const inputBsid = prompt("আবেদনকারী ফর্ম-এ BSID দেননি। অনুগ্রহ করে নির্ধারণ করুন:", "BS-" + Math.floor(10000 + Math.random() * 90000));
                 if (inputBsid) {
-                    bsid = inputBsid.toUpperCase().startsWith('BX-') ? inputBsid : 'BX-' + inputBsid;
+                    bsid = inputBsid.toUpperCase().startsWith('BS-') ? inputBsid : 'BS-' + inputBsid;
                 } else {
                     return;
                 }
