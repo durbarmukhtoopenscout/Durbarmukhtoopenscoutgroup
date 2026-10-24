@@ -61,8 +61,9 @@
                 <a href="#hero" class="hover:text-scoutGold transition">হোম</a>
                 <a href="#about" class="hover:text-scoutGold transition">আমাদের সম্পর্কে</a>
                 <a href="#members" class="hover:text-scoutGold transition">সদস্যবৃন্দ</a>
+                <a href="#achievements" class="hover:text-scoutGold transition">অর্জন ও পদক</a>
                 <a href="#apply" class="hover:text-scoutGold transition">আবেদন করুন</a>
-                <a href="#gallery" class="hover:text-scoutGold transition">অ্যাক্টিভিটি গ্যালারি</a>
+                <a href="#gallery" class="hover:text-scoutGold transition">গ্যালারি</a>
                 <a href="#contact" class="hover:text-scoutGold transition">যোগাযোগ</a>
             </nav>
 
@@ -156,8 +157,23 @@
             </div>
         </section>
 
+        <!-- Achievements & Awards Section (NEW) -->
+        <section id="achievements" class="py-12 bg-white px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-10">
+                    <h3 class="text-2xl md:text-3xl font-bold text-scoutNavy flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-award text-scoutGold"></i> অর্জন ও পদকপ্রাপ্তি (Hall of Fame)
+                    </h3>
+                    <p class="text-gray-600 text-sm mt-1">আমাদের স্কাউট দলের জাতীয় ও আঞ্চলিক অর্জনের গৌরবোজ্জ্বল স্বীকৃতি</p>
+                    <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
+                </div>
+
+                <div id="achievementsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
         <!-- Online Membership Form -->
-        <section id="apply" class="py-12 bg-white px-4">
+        <section id="apply" class="py-12 bg-gray-50 px-4">
             <div class="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-lg p-6 md:p-10">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl md:text-3xl font-bold text-scoutNavy">অনলাইন সদস্য আবেদন ফরম</h3>
@@ -216,7 +232,7 @@
         </section>
 
         <!-- Activity Gallery with Captions -->
-        <section id="gallery" class="py-12 bg-gray-50 px-4">
+        <section id="gallery" class="py-12 bg-white px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl md:text-3xl font-bold text-scoutGreen">অ্যাক্টিভিটি গ্যালারি</h3>
@@ -228,7 +244,7 @@
         </section>
 
         <!-- Contact & Senior Leadership -->
-        <section id="contact" class="py-12 bg-white px-4">
+        <section id="contact" class="py-12 bg-gray-50 px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
                     <h3 class="text-2xl md:text-3xl font-bold text-scoutNavy">উচ্চপদস্থ পরিচালনা পর্ষদ ও যোগাযোগ</h3>
@@ -262,7 +278,6 @@
             </div>
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <div>
-                    <!-- Removed password hint from placeholder -->
                     <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড লিখুন" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
                     <p id="loginError" class="text-xs text-red-500 mt-1 hidden">ভুল পাসওয়ার্ড!</p>
                 </div>
@@ -287,8 +302,9 @@
             <div class="bg-gray-100 border-b flex overflow-x-auto text-sm font-semibold">
                 <button onclick="switchAdminTab('branding')" class="adminTabBtn active px-5 py-3 border-b-2 border-scoutGreen text-scoutGreen">ব্র্যান্ডিং ও নোটিশ</button>
                 <button onclick="switchAdminTab('roster')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">মেম্বারশিপ পরিচালনা</button>
+                <button onclick="switchAdminTab('achievementsTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">অর্জন ও পদক</button>
                 <button onclick="switchAdminTab('applications')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">আবেদনসমূহ (<span id="appBadge">0</span>)</button>
-                <button onclick="switchAdminTab('galleryTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">অ্যাক্টিভিটি গ্যালারি (ক্যাপশনসহ)</button>
+                <button onclick="switchAdminTab('galleryTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">অ্যাক্টিভিটি গ্যালারি</button>
                 <button onclick="switchAdminTab('leadersTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">সিনিয়র লিডারগণ</button>
             </div>
 
@@ -362,13 +378,48 @@
                     </div>
                 </div>
 
-                <!-- 3. Applications Tab -->
+                <!-- 3. Achievements & Awards Admin Tab (NEW) -->
+                <div id="achievementsAdminTab" class="tabContent hidden space-y-6">
+                    <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
+                        <h5 id="achievementFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-award text-scoutGold mr-2"></i>নতুন অর্জন / পদকপ্রাপ্তির তথ্য যোগ বা আপডেট করুন</h5>
+                        <input type="hidden" id="editAchievementIndex" value="-1">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">পুরস্কারপ্রাপ্ত স্কাউটের নাম *</label>
+                                <input type="text" id="aRecipient" placeholder="যেমন: সুলতান সাইফ নিরব" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">অর্জন / পদকের নাম *</label>
+                                <input type="text" id="aTitle" placeholder="যেমন: প্রেসিডেন্ট স্কাউট অ্যাওয়ার্ড (PS Award)" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">প্রাপ্তির বছর / বিবরণ *</label>
+                                <input type="text" id="aYear" placeholder="যেমন: ২০২৫ বা জাতীয় ক্যাম্পুরি" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">মেডেল / ব্যাজ / স্কাউট ছবি (গ্যালারি থেকে)</label>
+                            <input type="file" id="aPhotoFile" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-1.5 bg-white">
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="saveAchievement()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
+                            <button onclick="resetAchievementForm()" class="bg-gray-400 text-white font-bold px-4 py-2 rounded-lg text-xs">রিসেট</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-gray-800 text-md">বর্তমান অর্জন ও পদক তালিকা</h5>
+                        <div id="adminAchievementsList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden"></div>
+                    </div>
+                </div>
+
+                <!-- 4. Applications Tab -->
                 <div id="applicationsTab" class="tabContent hidden space-y-4">
                     <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">অনলাইন আবেদনসমূহ</h4>
                     <div id="pendingAppsList" class="space-y-3"></div>
                 </div>
 
-                <!-- 4. Activity Gallery with Captions Tab -->
+                <!-- 5. Activity Gallery Tab -->
                 <div id="galleryTabContent" class="tabContent hidden space-y-4">
                     <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">অ্যাক্টিভিটি গ্যালারি পিকচার আপলোড (ক্যাপশনসহ)</h4>
                     <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
@@ -391,7 +442,7 @@
                     <div id="adminGalleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
                 </div>
 
-                <!-- 5. Senior Leaders Roster Tab (Fully Dynamic Add/Edit/Remove/Photo) -->
+                <!-- 6. Senior Leaders Tab -->
                 <div id="leadersTabContent" class="tabContent hidden space-y-6">
                     <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
                         <h5 id="leaderFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-user-shield text-scoutGreen mr-2"></i>সিনিয়র লিডার / উচ্চপদস্থ কর্মকর্তা যোগ বা আপডেট করুন</h5>
@@ -461,6 +512,9 @@
                 { id: 1, name: "সুলতান সাইফ নিরব", rank: "স্কাউট লিডার", bsid: "BSID-99201", photo: "https://via.placeholder.com/150?text=Nirob" },
                 { id: 2, name: "দেবজ্যোতি দাস পদ্ম", rank: "সহকারী স্কাউট লিডার", bsid: "BSID-99202", photo: "https://via.placeholder.com/150?text=Paddo" }
             ],
+            achievements: [
+                { recipient: "সুলতান সাইফ নিরব", title: "প্রেসিডেন্ট স্কাউট অ্যাওয়ার্ড (PS Award)", year: "২০২৫", photo: "https://via.placeholder.com/150?text=PS+Award" }
+            ],
             applications: [],
             gallery: [
                 { img: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80", caption: "বার্ষিক স্কাউট তাবু বাস ও ক্যাম্পিং" }
@@ -526,6 +580,20 @@
             renderMembers(appData.members || []);
             document.getElementById('appBadge').innerText = appData.applications ? appData.applications.length : 0;
 
+            // Render Achievements Grid
+            document.getElementById('achievementsGrid').innerHTML = (appData.achievements || []).map(ach => `
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-scoutGold/40 rounded-2xl p-5 shadow-md hover:shadow-lg transition relative overflow-hidden flex items-center gap-4">
+                    <div class="absolute -right-3 -bottom-3 text-scoutGold/10 text-7xl"><i class="fa-solid fa-trophy"></i></div>
+                    <img src="${ach.photo || 'https://via.placeholder.com/150'}" class="w-20 h-20 rounded-xl object-cover border-2 border-scoutGold shadow-sm shrink-0 bg-white">
+                    <div class="relative z-10">
+                        <span class="bg-scoutGold/20 text-scoutNavy text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase"><i class="fa-solid fa-star text-scoutGold mr-1"></i> ${ach.year || 'স্বীকৃতি'}</span>
+                        <h4 class="font-extrabold text-scoutNavy text-md mt-1 leading-snug">${ach.title}</h4>
+                        <p class="text-xs text-scoutGreen font-bold mt-1"><i class="fa-solid fa-user-check mr-1"></i>${ach.recipient}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Activity Gallery
             document.getElementById('galleryGrid').innerHTML = (appData.gallery || []).map(g => {
                 const imgSrc = typeof g === 'string' ? g : g.img;
                 const captionText = typeof g === 'string' ? 'অ্যাক্টিভিটি প্রোগ্রাম' : (g.caption || 'অ্যাক্টিভিটি প্রোগ্রাম');
@@ -541,6 +609,7 @@
                 `;
             }).join('');
 
+            // Render Senior Leaders
             document.getElementById('leadersGrid').innerHTML = (appData.leaders || []).map(leader => `
                 <div class="bg-gray-50 border rounded-xl p-4 flex items-center gap-4 shadow-sm">
                     <img src="${leader.photo || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGreen">
@@ -654,6 +723,7 @@
 
             if (tab === 'branding') document.getElementById('brandingTab').classList.remove('hidden');
             if (tab === 'roster') document.getElementById('rosterTab').classList.remove('hidden');
+            if (tab === 'achievementsTab') document.getElementById('achievementsAdminTab').classList.remove('hidden');
             if (tab === 'applications') document.getElementById('applicationsTab').classList.remove('hidden');
             if (tab === 'galleryTab') document.getElementById('galleryTabContent').classList.remove('hidden');
             if (tab === 'leadersTab') document.getElementById('leadersTabContent').classList.remove('hidden');
@@ -679,6 +749,24 @@
                     <div class="flex gap-2">
                         <button onclick="editMember(${idx})" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
                         <button onclick="removeMember(${idx})" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Achievements List Admin
+            const adminAchList = document.getElementById('adminAchievementsList');
+            adminAchList.innerHTML = (appData.achievements || []).map((a, idx) => `
+                <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <img src="${a.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded object-cover border border-scoutGold">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">${a.title}</p>
+                            <p class="text-xs text-scoutGreen font-semibold">${a.recipient} (${a.year || 'স্বীকৃতি'})</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editAchievement(${idx})" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
+                        <button onclick="removeAchievement(${idx})" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
                     </div>
                 </div>
             `).join('');
@@ -721,7 +809,7 @@
                 `;
             }).join('');
 
-            // Leaders Admin List (Senior Roster)
+            // Leaders Admin List
             document.getElementById('adminLeadersList').innerHTML = (appData.leaders || []).map((l, idx) => `
                 <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
                     <div class="flex items-center gap-3">
@@ -797,6 +885,68 @@
         async function removeMember(idx) {
             if (confirm("এই সদস্যকে মেম্বার তালিকা থেকে বাদ দিতে চান?")) {
                 appData.members.splice(idx, 1);
+                await saveData();
+                renderUI();
+                populateAdminData();
+            }
+        }
+
+        // --- Achievements & Awards CRUD Operations ---
+        async function saveAchievement() {
+            const idx = parseInt(document.getElementById('editAchievementIndex').value);
+            const recipient = document.getElementById('aRecipient').value.trim();
+            const title = document.getElementById('aTitle').value.trim();
+            const year = document.getElementById('aYear').value.trim();
+            const photoFile = document.getElementById('aPhotoFile').files;
+
+            if (!recipient || !title || !year) {
+                alert("দয়া করে স্কাউটের নাম, অর্জনের নাম এবং প্রাপ্তির বছর দিন!");
+                return;
+            }
+
+            if (!appData.achievements) appData.achievements = [];
+
+            let photo = idx >= 0 ? appData.achievements[idx].photo : "https://via.placeholder.com/150";
+            if (photoFile.length > 0) {
+                photo = await readFileAsBase64(photoFile[0]);
+            }
+
+            const achObj = { recipient, title, year, photo };
+
+            if (idx >= 0) {
+                appData.achievements[idx] = achObj;
+            } else {
+                appData.achievements.push(achObj);
+            }
+
+            await saveData();
+            renderUI();
+            populateAdminData();
+            resetAchievementForm();
+            alert("অর্জন ও পদকের তথ্য ফায়ারবেসে সফলভাবে সেভ করা হয়েছে!");
+        }
+
+        function editAchievement(idx) {
+            const a = appData.achievements[idx];
+            document.getElementById('editAchievementIndex').value = idx;
+            document.getElementById('aRecipient').value = a.recipient;
+            document.getElementById('aTitle').value = a.title;
+            document.getElementById('aYear').value = a.year;
+            document.getElementById('achievementFormTitle').innerText = "অর্জন ও পদকের তথ্য আপডেট করুন (" + a.title + ")";
+        }
+
+        function resetAchievementForm() {
+            document.getElementById('editAchievementIndex').value = "-1";
+            document.getElementById('aRecipient').value = "";
+            document.getElementById('aTitle').value = "";
+            document.getElementById('aYear').value = "";
+            document.getElementById('aPhotoFile').value = "";
+            document.getElementById('achievementFormTitle').innerText = "নতুন অর্জন / পদকপ্রাপ্তির তথ্য যোগ বা আপডেট করুন";
+        }
+
+        async function removeAchievement(idx) {
+            if (confirm("এই অর্জনের তথ্য ডিলিট করতে চান?")) {
+                appData.achievements.splice(idx, 1);
                 await saveData();
                 renderUI();
                 populateAdminData();
