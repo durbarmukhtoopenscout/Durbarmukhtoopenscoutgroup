@@ -40,10 +40,10 @@
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-    <!-- Loading Overlay -->
+    <!-- Fast Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 bg-white/95 z-50 flex items-center justify-center flex-col gap-3 transition-opacity duration-300">
         <div class="w-12 h-12 border-4 border-scoutGreen border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ফায়ারবেস ক্লাউড ডাটাবেজ থেকে তথ্য লোড হচ্ছে...</p>
+        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ক্লাউড ডাটাবেজ থেকে তথ্য লোড হচ্ছে...</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -145,7 +145,7 @@
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl md:text-3xl font-bold text-scoutGreen">আমাদের স্কাউট সদস্যবৃন্দ</h3>
-                    <p class="text-gray-600 text-sm mt-1">দলীয় সকল নিবন্ধিত সদস্য ও বিএসআইডি (BSID) তালিকা</p>
+                    <p class="text-gray-600 text-sm mt-1">দলীয় সকল নিবন্ধিত সদস্য ও বিএসআইডি (BSID) তালিকা (মোট: <span id="memberCount">0</span> জন)</p>
                     <div class="w-16 h-1 bg-scoutGold mx-auto mt-2 rounded-full"></div>
                 </div>
 
@@ -157,7 +157,7 @@
             </div>
         </section>
 
-        <!-- Achievements & Awards Section (NEW) -->
+        <!-- Achievements & Awards Section -->
         <section id="achievements" class="py-12 bg-white px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
@@ -172,7 +172,7 @@
             </div>
         </section>
 
-        <!-- Online Membership Form -->
+        <!-- Online Membership Form (Updated with BS ID input) -->
         <section id="apply" class="py-12 bg-gray-50 px-4">
             <div class="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-lg p-6 md:p-10">
                 <div class="text-center mb-8">
@@ -212,6 +212,16 @@
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">শিক্ষাপ্রতিষ্ঠান / পেশা *</label>
                             <input type="text" id="applicantInstitute" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
                         </div>
+                    </div>
+
+                    <!-- Added BS ID Optional Field -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">বাংলাদেশ স্কাউটস আইডি - BS ID (যদি থাকে)</label>
+                        <div class="flex items-center">
+                            <span class="bg-gray-100 border border-r-0 rounded-l-lg p-2.5 text-sm text-gray-600 font-bold select-none">BX-</span>
+                            <input type="text" id="applicantBsidNum" placeholder="যেমন: 12345" class="w-full border rounded-r-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-1">BS ID থাকলে নম্বরটি লিখুন। না থাকলে ফাঁকা রাখুন।</p>
                     </div>
 
                     <div>
@@ -300,8 +310,8 @@
 
             <!-- Admin Navigation Tabs -->
             <div class="bg-gray-100 border-b flex overflow-x-auto text-sm font-semibold">
-                <button onclick="switchAdminTab('branding')" class="adminTabBtn active px-5 py-3 border-b-2 border-scoutGreen text-scoutGreen">ব্র্যান্ডিং ও নোটিশ</button>
-                <button onclick="switchAdminTab('roster')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">মেম্বারশিপ পরিচালনা</button>
+                <button onclick="switchAdminTab('roster')" class="adminTabBtn active px-5 py-3 border-b-2 border-scoutGreen text-scoutGreen">মেম্বারশিপ পরিচালনা</button>
+                <button onclick="switchAdminTab('branding')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">ব্র্যান্ডিং ও নোটিশ</button>
                 <button onclick="switchAdminTab('achievementsTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">অর্জন ও পদক</button>
                 <button onclick="switchAdminTab('applications')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">আবেদনসমূহ (<span id="appBadge">0</span>)</button>
                 <button onclick="switchAdminTab('galleryTab')" class="adminTabBtn px-5 py-3 text-gray-600 hover:text-scoutGreen">অ্যাক্টিভিটি গ্যালারি</button>
@@ -310,8 +320,43 @@
 
             <div class="flex-grow p-6 overflow-y-auto space-y-6">
                 
-                <!-- 1. Branding Tab -->
-                <div id="brandingTab" class="tabContent space-y-4">
+                <!-- 1. Roster Management Tab -->
+                <div id="rosterTab" class="tabContent space-y-6">
+                    <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
+                        <h5 id="memberFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-user-plus text-scoutGreen mr-2"></i>নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন</h5>
+                        <input type="hidden" id="editMemberKey" value="">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">সদস্যের নাম *</label>
+                                <input type="text" id="mName" placeholder="নাম লিখুন" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">পদবি (Rank) *</label>
+                                <input type="text" id="mRank" placeholder="যেমন: স্কাউট সদস্য / মেম্বার" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">বিএসআইডি (BSID)</label>
+                                <input type="text" id="mBsid" placeholder="BX-XXXXX" class="w-full border rounded-lg p-2 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">ছবি (গ্যালারি থেকে বেছে নিন)</label>
+                            <input type="file" id="mPhotoFile" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-1.5">
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="saveMemberBtn" onclick="saveMemberFast()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-xs flex items-center gap-1 shadow"><i class="fa-solid fa-check mr-1"></i> সেভ করুন</button>
+                            <button onclick="resetMemberForm()" class="bg-gray-400 text-white font-bold px-4 py-2 rounded-lg text-xs">রিসেট</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-gray-800 text-md">বর্তমান সদস্য তালিকা</h5>
+                        <div id="adminMemberList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Branding Tab -->
+                <div id="brandingTab" class="tabContent hidden space-y-4">
                     <h4 class="font-bold text-lg border-b pb-2 text-scoutNavy">ওয়েবসাইট ব্র্যান্ডিং কনফিগারেশন</h4>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
@@ -343,46 +388,11 @@
                     <button onclick="saveBranding()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-sm shadow">সেভ পরিবর্তন</button>
                 </div>
 
-                <!-- 2. Roster Management Tab -->
-                <div id="rosterTab" class="tabContent hidden space-y-6">
-                    <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
-                        <h5 id="memberFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-user-plus text-scoutGreen mr-2"></i>নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন</h5>
-                        <input type="hidden" id="editMemberIndex" value="-1">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 mb-1">সদস্যের নাম *</label>
-                                <input type="text" id="mName" placeholder="নাম লিখুন" class="w-full border rounded-lg p-2 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 mb-1">পদবি (Rank) *</label>
-                                <input type="text" id="mRank" placeholder="যেমন: স্কাউট সদস্য / মেম্বার" class="w-full border rounded-lg p-2 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 mb-1">বিএসআইডি (BSID)</label>
-                                <input type="text" id="mBsid" placeholder="BSID-XXXXX" class="w-full border rounded-lg p-2 text-sm">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">ছবি (গ্যালারি থেকে বেছে নিন)</label>
-                            <input type="file" id="mPhotoFile" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-1.5">
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="saveMember()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs"><i class="fa-solid fa-check mr-1"></i> সেভ করুন</button>
-                            <button onclick="resetMemberForm()" class="bg-gray-400 text-white font-bold px-4 py-2 rounded-lg text-xs">রিসেট</button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <h5 class="font-bold text-gray-800 text-md">বর্তমান সদস্য তালিকা</h5>
-                        <div id="adminMemberList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden"></div>
-                    </div>
-                </div>
-
-                <!-- 3. Achievements & Awards Admin Tab (NEW) -->
+                <!-- 3. Achievements & Awards Admin Tab -->
                 <div id="achievementsAdminTab" class="tabContent hidden space-y-6">
                     <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
                         <h5 id="achievementFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-award text-scoutGold mr-2"></i>নতুন অর্জন / পদকপ্রাপ্তির তথ্য যোগ বা আপডেট করুন</h5>
-                        <input type="hidden" id="editAchievementIndex" value="-1">
+                        <input type="hidden" id="editAchievementKey" value="">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">পুরস্কারপ্রাপ্ত স্কাউটের নাম *</label>
@@ -402,14 +412,14 @@
                             <input type="file" id="aPhotoFile" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-1.5 bg-white">
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="saveAchievement()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
+                            <button id="saveAchBtn" onclick="saveAchievementFast()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
                             <button onclick="resetAchievementForm()" class="bg-gray-400 text-white font-bold px-4 py-2 rounded-lg text-xs">রিসেট</button>
                         </div>
                     </div>
 
                     <div class="space-y-2">
                         <h5 class="font-bold text-gray-800 text-md">বর্তমান অর্জন ও পদক তালিকা</h5>
-                        <div id="adminAchievementsList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden"></div>
+                        <div id="adminAchievementsList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden max-h-96 overflow-y-auto"></div>
                     </div>
                 </div>
 
@@ -433,20 +443,20 @@
                                 <input type="text" id="galleryCaptionInput" placeholder="যেমন: বার্ষিক স্কাউট ক্যাম্পুরি ২০২৬" class="w-full border rounded-lg p-2 text-sm bg-white">
                             </div>
                         </div>
-                        <button onclick="addGalleryImage()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-xs flex items-center gap-1">
+                        <button onclick="addGalleryImageFast()" class="bg-scoutGreen text-white font-bold px-5 py-2 rounded-lg text-xs flex items-center gap-1">
                             <i class="fa-solid fa-upload"></i> গ্যালারিতে যোগ করুন
                         </button>
                     </div>
 
                     <h5 class="font-bold text-gray-800 text-md pt-2">বর্তমান গ্যালারি ছবিসমূহ</h5>
-                    <div id="adminGalleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+                    <div id="adminGalleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto"></div>
                 </div>
 
                 <!-- 6. Senior Leaders Tab -->
                 <div id="leadersTabContent" class="tabContent hidden space-y-6">
                     <div class="bg-gray-50 p-4 border rounded-xl space-y-3">
                         <h5 id="leaderFormTitle" class="font-bold text-scoutNavy text-md"><i class="fa-solid fa-user-shield text-scoutGreen mr-2"></i>সিনিয়র লিডার / উচ্চপদস্থ কর্মকর্তা যোগ বা আপডেট করুন</h5>
-                        <input type="hidden" id="editLeaderIndex" value="-1">
+                        <input type="hidden" id="editLeaderKey" value="">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">লিডারের পূর্ণ নাম *</label>
@@ -466,14 +476,14 @@
                             <input type="file" id="lPhotoFile" accept="image/*" class="w-full text-xs text-gray-500 border rounded-lg p-1.5 bg-white">
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="saveLeader()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
+                            <button id="saveLeaderBtn" onclick="saveLeaderFast()" class="bg-scoutGreen text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
                             <button onclick="resetLeaderForm()" class="bg-gray-400 text-white font-bold px-4 py-2 rounded-lg text-xs">রিসেট</button>
                         </div>
                     </div>
 
                     <div class="space-y-2">
                         <h5 class="font-bold text-gray-800 text-md">বর্তমান সিনিয়র লিডারদের তালিকা</h5>
-                        <div id="adminLeadersList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden"></div>
+                        <div id="adminLeadersList" class="divide-y divide-gray-200 border rounded-xl bg-white overflow-hidden max-h-96 overflow-y-auto"></div>
                     </div>
                 </div>
 
@@ -491,97 +501,80 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- Application Script with Google Firebase Realtime Database Engine -->
+    <!-- Application Script with Fast Firebase Path Engine -->
     <script>
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
-        
-        // Google Firebase Database URL Integration
-        const FIREBASE_DB_URL = "https://durbarmukhtoopenscout-77f4d-default-rtdb.firebaseio.com/appData.json";
+        const FIREBASE_BASE_URL = "https://durbarmukhtoopenscout-77f4d-default-rtdb.firebaseio.com";
 
-        let defaultData = {
-            logo: "https://via.placeholder.com/150?text=Logo",
-            heroBg: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
-            title: "দূর্বার মুক্ত স্কাউট দল, বড়লেখা",
-            subtitle: "বড়লেখা, মৌলভীবাজার",
-            motto: "সেবা",
-            notice: "বাংলাদেশ স্কাউটস আইডি (BSID) সংক্রান্ত তথ্যের জন্য অনতিবিলম্বে যোগাযোগ করুন।",
-            showNotice: true,
-            story: "দূর্বার মুক্ত স্কাউট দল, বড়লেখা, মৌলভীবাজার এলাকার যুবসমাজকে স্কাউট আন্দোলনের মাধ্যমে একজন সৎ, সুশৃঙ্খল ও আত্মনির্ভরশীল সদস্য হিসেবে গড়ে তুলতে নিরলসভাবে কাজ করে যাচ্ছে।",
-            members: [
-                { id: 1, name: "সুলতান সাইফ নিরব", rank: "স্কাউট লিডার", bsid: "BSID-99201", photo: "https://via.placeholder.com/150?text=Nirob" },
-                { id: 2, name: "দেবজ্যোতি দাস পদ্ম", rank: "সহকারী স্কাউট লিডার", bsid: "BSID-99202", photo: "https://via.placeholder.com/150?text=Paddo" }
-            ],
-            achievements: [
-                { recipient: "সুলতান সাইফ নিরব", title: "প্রেসিডেন্ট স্কাউট অ্যাওয়ার্ড (PS Award)", year: "২০২৫", photo: "https://via.placeholder.com/150?text=PS+Award" }
-            ],
-            applications: [],
-            gallery: [
-                { img: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80", caption: "বার্ষিক স্কাউট তাবু বাস ও ক্যাম্পিং" }
-            ],
-            leaders: [
-                { name: "সুলতান সাইফ নিরব", role: "স্কাউট লিডার", phone: "01700000000", photo: "https://via.placeholder.com/150?text=Nirob" },
-                { name: "দেবজ্যোতি দাস পদ্ম", role: "সহকারী স্কাউট লিডার", phone: "01800000000", photo: "https://via.placeholder.com/150?text=Paddo" }
-            ]
+        let appData = {
+            branding: {
+                logo: "https://via.placeholder.com/150?text=Logo",
+                heroBg: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+                title: "দূর্বার মুক্ত স্কাউট দল, বড়লেখা",
+                subtitle: "বড়লেখা, মৌলভীবাজার",
+                motto: "সেবা",
+                notice: "বাংলাদেশ স্কাউটস আইডি (BSID) সংক্রান্ত তথ্যের জন্য অনতিবিলম্বে যোগাযোগ করুন।",
+                showNotice: true
+            },
+            members: {},
+            achievements: {},
+            applications: {},
+            gallery: {},
+            leaders: {}
         };
 
-        let appData = defaultData;
-
-        // Firebase Cloud Loader
+        // Fast Parallel Loader
         async function loadData() {
             try {
-                const response = await fetch(FIREBASE_DB_URL);
+                const response = await fetch(`${FIREBASE_BASE_URL}/.json`);
                 if (response.ok) {
                     const resData = await response.json();
-                    if (resData && resData.title) {
-                        appData = resData;
-                    } else {
-                        await saveData();
+                    if (resData) {
+                        appData.branding = resData.branding || appData.branding;
+                        appData.members = resData.members || {};
+                        appData.achievements = resData.achievements || {};
+                        appData.applications = resData.applications || {};
+                        appData.gallery = resData.gallery || {};
+                        appData.leaders = resData.leaders || {};
                     }
                 }
             } catch (e) {
-                console.error("Firebase Connection Error:", e);
+                console.error("Firebase Load Error:", e);
             } finally {
                 renderUI();
                 document.getElementById('loadingOverlay').classList.add('hidden');
             }
         }
 
-        // Firebase Cloud Saver
-        async function saveData() {
-            try {
-                await fetch(FIREBASE_DB_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(appData)
-                });
-            } catch(e) {
-                console.error("Firebase Save Error:", e);
-            }
-        }
-
         function renderUI() {
-            document.getElementById('headerLogo').src = appData.logo;
-            document.getElementById('headerTitle').innerText = appData.title;
-            document.getElementById('headerSubtitle').innerText = appData.subtitle;
-            document.getElementById('heroTitle').innerText = appData.title;
-            document.getElementById('heroSubtitle').innerText = appData.subtitle;
-            document.getElementById('heroMotto').innerText = `"${appData.motto}"`;
-            document.getElementById('heroBg').style.backgroundImage = `url('${appData.heroBg}')`;
+            const b = appData.branding;
+            document.getElementById('headerLogo').src = b.logo;
+            document.getElementById('headerTitle').innerText = b.title;
+            document.getElementById('headerSubtitle').innerText = b.subtitle;
+            document.getElementById('heroTitle').innerText = b.title;
+            document.getElementById('heroSubtitle').innerText = b.subtitle;
+            document.getElementById('heroMotto').innerText = `"${b.motto}"`;
+            document.getElementById('heroBg').style.backgroundImage = `url('${b.heroBg}')`;
             
             const noticeTicker = document.getElementById('noticeTicker');
-            if (appData.showNotice) {
+            if (b.showNotice) {
                 noticeTicker.classList.remove('hidden');
-                document.getElementById('noticeText').innerText = appData.notice;
+                document.getElementById('noticeText').innerText = b.notice;
             } else {
                 noticeTicker.classList.add('hidden');
             }
 
-            renderMembers(appData.members || []);
-            document.getElementById('appBadge').innerText = appData.applications ? appData.applications.length : 0;
+            const memberList = Object.keys(appData.members).map(k => ({ key: k, ...appData.members[k] }));
+            document.getElementById('memberCount').innerText = memberList.length;
+            renderMembers(memberList);
 
-            // Render Achievements Grid
-            document.getElementById('achievementsGrid').innerHTML = (appData.achievements || []).map(ach => `
+            const appList = Object.keys(appData.applications).map(k => ({ key: k, ...appData.applications[k] }));
+            document.getElementById('appBadge').innerText = appList.length;
+
+            // Render Achievements
+            const achList = Object.keys(appData.achievements).map(k => ({ key: k, ...appData.achievements[k] }));
+            document.getElementById('achievementsGrid').innerHTML = achList.map(ach => `
                 <div class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-scoutGold/40 rounded-2xl p-5 shadow-md hover:shadow-lg transition relative overflow-hidden flex items-center gap-4">
                     <div class="absolute -right-3 -bottom-3 text-scoutGold/10 text-7xl"><i class="fa-solid fa-trophy"></i></div>
                     <img src="${ach.photo || 'https://via.placeholder.com/150'}" class="w-20 h-20 rounded-xl object-cover border-2 border-scoutGold shadow-sm shrink-0 bg-white">
@@ -593,24 +586,22 @@
                 </div>
             `).join('');
 
-            // Render Activity Gallery
-            document.getElementById('galleryGrid').innerHTML = (appData.gallery || []).map(g => {
-                const imgSrc = typeof g === 'string' ? g : g.img;
-                const captionText = typeof g === 'string' ? 'অ্যাক্টিভিটি প্রোগ্রাম' : (g.caption || 'অ্যাক্টিভিটি প্রোগ্রাম');
-                return `
-                    <div class="relative group rounded-2xl overflow-hidden shadow-md border bg-white h-64">
-                        <img src="${imgSrc}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
-                            <p class="text-white font-bold text-sm leading-tight flex items-center gap-1.5">
-                                <i class="fa-solid fa-camera text-scoutGold"></i> ${captionText}
-                            </p>
-                        </div>
+            // Render Gallery
+            const galList = Object.keys(appData.gallery).map(k => ({ key: k, ...appData.gallery[k] }));
+            document.getElementById('galleryGrid').innerHTML = galList.map(g => `
+                <div class="relative group rounded-2xl overflow-hidden shadow-md border bg-white h-64">
+                    <img src="${g.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
+                        <p class="text-white font-bold text-sm leading-tight flex items-center gap-1.5">
+                            <i class="fa-solid fa-camera text-scoutGold"></i> ${g.caption || 'অ্যাক্টিভিটি প্রোগ্রাম'}
+                        </p>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `).join('');
 
-            // Render Senior Leaders
-            document.getElementById('leadersGrid').innerHTML = (appData.leaders || []).map(leader => `
+            // Render Leaders
+            const ldrList = Object.keys(appData.leaders).map(k => ({ key: k, ...appData.leaders[k] }));
+            document.getElementById('leadersGrid').innerHTML = ldrList.map(leader => `
                 <div class="bg-gray-50 border rounded-xl p-4 flex items-center gap-4 shadow-sm">
                     <img src="${leader.photo || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-full object-cover border-2 border-scoutGreen">
                     <div>
@@ -640,7 +631,8 @@
 
         function filterMembers() {
             const query = document.getElementById('memberSearch').value.toLowerCase();
-            const filtered = (appData.members || []).filter(m => 
+            const list = Object.keys(appData.members).map(k => ({ key: k, ...appData.members[k] }));
+            const filtered = list.filter(m => 
                 m.name.toLowerCase().includes(query) || 
                 m.rank.toLowerCase().includes(query) || 
                 (m.bsid && m.bsid.toLowerCase().includes(query))
@@ -648,11 +640,302 @@
             renderMembers(filtered);
         }
 
+        // Fast Member Save Engine
+        async function saveMemberFast() {
+            const key = document.getElementById('editMemberKey').value;
+            const name = document.getElementById('mName').value.trim();
+            const rank = document.getElementById('mRank').value.trim();
+            let bsid = document.getElementById('mBsid').value.trim();
+            const photoFile = document.getElementById('mPhotoFile').files;
+            const btn = document.getElementById('saveMemberBtn');
+
+            if (!name || !rank) {
+                alert("দয়া করে মেম্বারের নাম এবং পদবি লিখুন!");
+                return;
+            }
+
+            if (bsid && !bsid.toUpperCase().startsWith('BX-')) {
+                bsid = 'BX-' + bsid;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেস হচ্ছে...`;
+
+            let photo = key ? appData.members[key].photo : "https://via.placeholder.com/150";
+            if (photoFile.length > 0) {
+                photo = await readFileAsBase64(photoFile[0]);
+            }
+
+            const memberObj = { name, rank, bsid, photo };
+            const targetKey = key || Date.now();
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/members/${targetKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(memberObj)
+                });
+                
+                appData.members[targetKey] = memberObj;
+                renderUI();
+                populateAdminData();
+                resetMemberForm();
+                alert("সদস্য তথ্য ফায়ারবেসে ইনস্ট্যান্ট সেভ হয়েছে!");
+            } catch(e) {
+                alert("সেভ করতে সমস্যা হয়েছে, আবার চেষ্টা করুন!");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> সেভ করুন`;
+            }
+        }
+
+        function editMember(key) {
+            const m = appData.members[key];
+            document.getElementById('editMemberKey').value = key;
+            document.getElementById('mName').value = m.name;
+            document.getElementById('mRank').value = m.rank;
+            document.getElementById('mBsid').value = m.bsid || '';
+            document.getElementById('memberFormTitle').innerText = "মেম্বারের তথ্য আপডেট করুন (" + m.name + ")";
+        }
+
+        function resetMemberForm() {
+            document.getElementById('editMemberKey').value = "";
+            document.getElementById('mName').value = "";
+            document.getElementById('mRank').value = "";
+            document.getElementById('mBsid').value = "";
+            document.getElementById('mPhotoFile').value = "";
+            document.getElementById('memberFormTitle').innerText = "নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন";
+        }
+
+        async function removeMember(key) {
+            if (confirm("এই সদস্যকে মেম্বার তালিকা থেকে বাদ দিতে চান?")) {
+                await fetch(`${FIREBASE_BASE_URL}/members/${key}.json`, { method: 'DELETE' });
+                delete appData.members[key];
+                renderUI();
+                populateAdminData();
+            }
+        }
+
+        // Fast Achievements Save Engine
+        async function saveAchievementFast() {
+            const key = document.getElementById('editAchievementKey').value;
+            const recipient = document.getElementById('aRecipient').value.trim();
+            const title = document.getElementById('aTitle').value.trim();
+            const year = document.getElementById('aYear').value.trim();
+            const photoFile = document.getElementById('aPhotoFile').files;
+            const btn = document.getElementById('saveAchBtn');
+
+            if (!recipient || !title || !year) {
+                alert("দয়া করে স্কাউটের নাম, অর্জনের নাম এবং প্রাপ্তির বছর দিন!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেস হচ্ছে...`;
+
+            let photo = key ? appData.achievements[key].photo : "https://via.placeholder.com/150";
+            if (photoFile.length > 0) {
+                photo = await readFileAsBase64(photoFile[0]);
+            }
+
+            const achObj = { recipient, title, year, photo };
+            const targetKey = key || Date.now();
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/achievements/${targetKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(achObj)
+                });
+                appData.achievements[targetKey] = achObj;
+                renderUI();
+                populateAdminData();
+                resetAchievementForm();
+                alert("অর্জন ও পদকের তথ্য ইনস্ট্যান্ট সেভ হয়েছে!");
+            } catch(e) {
+                alert("সেভ হতে ব্যর্থ হয়েছে!");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> সেভ করুন`;
+            }
+        }
+
+        function editAchievement(key) {
+            const a = appData.achievements[key];
+            document.getElementById('editAchievementKey').value = key;
+            document.getElementById('aRecipient').value = a.recipient;
+            document.getElementById('aTitle').value = a.title;
+            document.getElementById('aYear').value = a.year;
+            document.getElementById('achievementFormTitle').innerText = "অর্জন আপডেট করুন (" + a.title + ")";
+        }
+
+        function resetAchievementForm() {
+            document.getElementById('editAchievementKey').value = "";
+            document.getElementById('aRecipient').value = "";
+            document.getElementById('aTitle').value = "";
+            document.getElementById('aYear').value = "";
+            document.getElementById('aPhotoFile').value = "";
+            document.getElementById('achievementFormTitle').innerText = "নতুন অর্জন / পদকপ্রাপ্তির তথ্য যোগ বা আপডেট করুন";
+        }
+
+        async function removeAchievement(key) {
+            if (confirm("এই অর্জনের তথ্য ডিলিট করতে চান?")) {
+                await fetch(`${FIREBASE_BASE_URL}/achievements/${key}.json`, { method: 'DELETE' });
+                delete appData.achievements[key];
+                renderUI();
+                populateAdminData();
+            }
+        }
+
+        // Fast Leader Save Engine
+        async function saveLeaderFast() {
+            const key = document.getElementById('editLeaderKey').value;
+            const name = document.getElementById('lName').value.trim();
+            const role = document.getElementById('lRole').value.trim();
+            const phone = document.getElementById('lPhone').value.trim();
+            const photoFile = document.getElementById('lPhotoFile').files;
+            const btn = document.getElementById('saveLeaderBtn');
+
+            if (!name || !role || !phone) {
+                alert("দয়া করে লিডারের নাম, পদবি এবং ফোন নম্বর দিন!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেস হচ্ছে...`;
+
+            let photo = key ? appData.leaders[key].photo : "https://via.placeholder.com/150";
+            if (photoFile.length > 0) {
+                photo = await readFileAsBase64(photoFile[0]);
+            }
+
+            const lObj = { name, role, phone, photo };
+            const targetKey = key || Date.now();
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/leaders/${targetKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(lObj)
+                });
+                appData.leaders[targetKey] = lObj;
+                renderUI();
+                populateAdminData();
+                resetLeaderForm();
+                alert("সিনিয়র লিডারের তথ্য সেভ হয়েছে!");
+            } catch(e) {
+                alert("সেভ হতে ব্যর্থ হয়েছে!");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> সেভ করুন`;
+            }
+        }
+
+        function editLeader(key) {
+            const l = appData.leaders[key];
+            document.getElementById('editLeaderKey').value = key;
+            document.getElementById('lName').value = l.name;
+            document.getElementById('lRole').value = l.role;
+            document.getElementById('lPhone').value = l.phone;
+            document.getElementById('leaderFormTitle').innerText = "লিডারের তথ্য আপডেট করুন (" + l.name + ")";
+        }
+
+        function resetLeaderForm() {
+            document.getElementById('editLeaderKey').value = "";
+            document.getElementById('lName').value = "";
+            document.getElementById('lRole').value = "";
+            document.getElementById('lPhone').value = "";
+            document.getElementById('lPhotoFile').value = "";
+            document.getElementById('leaderFormTitle').innerText = "সিনিয়র লিডার / উচ্চপদস্থ কর্মকর্তা যোগ বা আপডেট করুন";
+        }
+
+        async function removeLeader(key) {
+            if (confirm("এই লিডারকে তালিকা থেকে বাদ দিতে চান?")) {
+                await fetch(`${FIREBASE_BASE_URL}/leaders/${key}.json`, { method: 'DELETE' });
+                delete appData.leaders[key];
+                renderUI();
+                populateAdminData();
+            }
+        }
+
+        async function saveBranding() {
+            const branding = {
+                logo: appData.branding.logo,
+                heroBg: appData.branding.heroBg,
+                title: document.getElementById('inputHeroTitle').value,
+                motto: document.getElementById('inputMotto').value,
+                notice: document.getElementById('inputNotice').value,
+                showNotice: document.getElementById('toggleNoticeShow').checked,
+                subtitle: appData.branding.subtitle
+            };
+
+            await fetch(`${FIREBASE_BASE_URL}/branding.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(branding)
+            });
+
+            appData.branding = branding;
+            renderUI();
+            alert("ব্র্যান্ডিং ইনস্ট্যান্ট সেভ হয়েছে!");
+        }
+
+        async function uploadImage(input, target) {
+            if (input.files.length > 0) {
+                const b64 = await readFileAsBase64(input.files[0]);
+                appData.branding[target] = b64;
+                await fetch(`${FIREBASE_BASE_URL}/branding/${target}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(b64)
+                });
+                renderUI();
+                alert("ছবি আপলোড সম্পন্ন!");
+            }
+        }
+
+        async function addGalleryImageFast() {
+            const input = document.getElementById('galleryFileInput');
+            const captionInput = document.getElementById('galleryCaptionInput');
+
+            if (input.files.length === 0) {
+                alert("দয়া করে একটি ছবি সিলেক্ট করুন!");
+                return;
+            }
+
+            const img = await readFileAsBase64(input.files[0]);
+            const caption = captionInput.value.trim() || "অ্যাক্টিভিটি প্রোগ্রাম";
+            const targetKey = Date.now();
+            const galObj = { img, caption };
+
+            await fetch(`${FIREBASE_BASE_URL}/gallery/${targetKey}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(galObj)
+            });
+
+            appData.gallery[targetKey] = galObj;
+            renderUI();
+            populateAdminData();
+
+            input.value = '';
+            captionInput.value = '';
+            alert("ছবি গ্যালারিতে যোগ হয়েছে!");
+        }
+
+        async function removeGalleryImage(key) {
+            await fetch(`${FIREBASE_BASE_URL}/gallery/${key}.json`, { method: 'DELETE' });
+            delete appData.gallery[key];
+            renderUI();
+            populateAdminData();
+        }
+
+        // Online Application Submit Logic (Includes BS ID BX- Processing)
         async function submitApplication(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = "প্রসেস হচ্ছে...";
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেস হচ্ছে...`;
 
             const fileInput = document.getElementById('applicantPhotoFile');
             let photo = "https://via.placeholder.com/150";
@@ -660,8 +943,13 @@
                 photo = await readFileAsBase64(fileInput.files[0]);
             }
 
+            let rawBsid = document.getElementById('applicantBsidNum').value.trim();
+            let finalBsid = "";
+            if (rawBsid !== "") {
+                finalBsid = rawBsid.toUpperCase().startsWith('BX-') ? rawBsid : 'BX-' + rawBsid;
+            }
+
             const appPayload = {
-                id: Date.now(),
                 name: document.getElementById('applicantName').value,
                 phone: document.getElementById('applicantPhone').value,
                 father: document.getElementById('applicantFather').value,
@@ -669,6 +957,7 @@
                 dob: document.getElementById('applicantDob').value,
                 institute: document.getElementById('applicantInstitute').value,
                 address: document.getElementById('applicantAddress').value,
+                bsid: finalBsid,
                 photo: photo,
                 date: new Date().toLocaleDateString('bn-BD')
             };
@@ -680,19 +969,24 @@
                     body: JSON.stringify({
                         access_key: WEB3FORMS_KEY,
                         subject: `নতুন স্কাউট আবেদন: ${appPayload.name}`,
-                        message: `নাম: ${appPayload.name}, ফোন: ${appPayload.phone}, ঠিকানা: ${appPayload.address}`
+                        message: `নাম: ${appPayload.name}, ফোন: ${appPayload.phone}, BSID: ${appPayload.bsid || 'নেই'}, ঠিকানা: ${appPayload.address}`
                     })
                 });
             } catch (err) {}
 
-            if (!appData.applications) appData.applications = [];
-            appData.applications.push(appPayload);
-            await saveData();
+            const targetKey = Date.now();
+            await fetch(`${FIREBASE_BASE_URL}/applications/${targetKey}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(appPayload)
+            });
+
+            appData.applications[targetKey] = appPayload;
 
             alert("আপনার আবেদনটি সফলভাবে জমা হয়েছে!");
             document.getElementById('membershipForm').reset();
             btn.disabled = false;
-            btn.innerText = "আবেদন জমা দিন";
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> আবেদন জমা দিন`;
             renderUI();
         }
 
@@ -730,377 +1024,173 @@
         }
 
         function populateAdminData() {
-            document.getElementById('inputHeroTitle').value = appData.title;
-            document.getElementById('inputMotto').value = appData.motto;
-            document.getElementById('inputNotice').value = appData.notice;
-            document.getElementById('toggleNoticeShow').checked = appData.showNotice;
+            document.getElementById('inputHeroTitle').value = appData.branding.title || '';
+            document.getElementById('inputMotto').value = appData.branding.motto || '';
+            document.getElementById('inputNotice').value = appData.branding.notice || '';
+            document.getElementById('toggleNoticeShow').checked = appData.branding.showNotice;
 
-            // Members List Admin
-            const adminMemberList = document.getElementById('adminMemberList');
-            adminMemberList.innerHTML = (appData.members || []).map((m, idx) => `
-                <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
-                    <div class="flex items-center gap-3">
-                        <img src="${m.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border">
-                        <div>
-                            <p class="font-bold text-sm text-gray-800">${m.name}</p>
-                            <p class="text-xs text-scoutGreen font-semibold">${m.rank} | ${m.bsid || 'BSID নেই'}</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="editMember(${idx})" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
-                        <button onclick="removeMember(${idx})" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
-                    </div>
-                </div>
-            `).join('');
-
-            // Achievements List Admin
-            const adminAchList = document.getElementById('adminAchievementsList');
-            adminAchList.innerHTML = (appData.achievements || []).map((a, idx) => `
-                <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
-                    <div class="flex items-center gap-3">
-                        <img src="${a.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded object-cover border border-scoutGold">
-                        <div>
-                            <p class="font-bold text-sm text-gray-800">${a.title}</p>
-                            <p class="text-xs text-scoutGreen font-semibold">${a.recipient} (${a.year || 'স্বীকৃতি'})</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="editAchievement(${idx})" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
-                        <button onclick="removeAchievement(${idx})" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
-                    </div>
-                </div>
-            `).join('');
-
-            // Applications List Admin
-            const appList = document.getElementById('pendingAppsList');
-            if (!appData.applications || appData.applications.length === 0) {
-                appList.innerHTML = `<p class="text-gray-500 text-sm italic">কোনো আবেদন নেই।</p>`;
-            } else {
-                appList.innerHTML = appData.applications.map((app, idx) => `
-                    <div class="border rounded-xl p-4 bg-gray-50 flex flex-col md:flex-row justify-between gap-4">
-                        <div class="flex gap-3">
-                            <img src="${app.photo}" class="w-16 h-16 rounded object-cover border">
-                            <div class="text-sm">
-                                <h5 class="font-bold text-gray-800">${app.name} (${app.phone})</h5>
-                                <p class="text-xs text-gray-600">পিতা: ${app.father} | মাতা: ${app.mother}</p>
+            // Members Admin List
+            const memberKeys = Object.keys(appData.members);
+            document.getElementById('adminMemberList').innerHTML = memberKeys.map(k => {
+                const m = appData.members[k];
+                return `
+                    <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <img src="${m.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border">
+                            <div>
+                                <p class="font-bold text-sm text-gray-800">${m.name}</p>
+                                <p class="text-xs text-scoutGreen font-semibold">${m.rank} | ${m.bsid || 'BSID নেই'}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="approveApp(${idx})" class="bg-scoutGreen text-white text-xs px-3 py-1.5 rounded font-bold">Approve</button>
-                            <button onclick="printForm(${idx})" class="bg-scoutNavy text-white text-xs px-3 py-1.5 rounded font-bold">Print</button>
-                            <button onclick="deleteApp(${idx})" class="bg-red-600 text-white text-xs px-3 py-1.5 rounded font-bold">Delete</button>
+                        <div class="flex gap-2">
+                            <button onclick="editMember('${k}')" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
+                            <button onclick="removeMember('${k}')" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
                         </div>
                     </div>
-                `).join('');
+                `;
+            }).join('');
+
+            // Achievements Admin List
+            const achKeys = Object.keys(appData.achievements);
+            document.getElementById('adminAchievementsList').innerHTML = achKeys.map(k => {
+                const a = appData.achievements[k];
+                return `
+                    <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <img src="${a.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded object-cover border border-scoutGold">
+                            <div>
+                                <p class="font-bold text-sm text-gray-800">${a.title}</p>
+                                <p class="text-xs text-scoutGreen font-semibold">${a.recipient} (${a.year || 'স্বীকৃতি'})</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editAchievement('${k}')" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
+                            <button onclick="removeAchievement('${k}')" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Applications Admin List
+            const appKeys = Object.keys(appData.applications);
+            const appList = document.getElementById('pendingAppsList');
+            if (appKeys.length === 0) {
+                appList.innerHTML = `<p class="text-gray-500 text-sm italic">কোনো আবেদন নেই।</p>`;
+            } else {
+                appList.innerHTML = appKeys.map(k => {
+                    const app = appData.applications[k];
+                    return `
+                        <div class="border rounded-xl p-4 bg-gray-50 flex flex-col md:flex-row justify-between gap-4">
+                            <div class="flex gap-3">
+                                <img src="${app.photo}" class="w-16 h-16 rounded object-cover border">
+                                <div class="text-sm">
+                                    <h5 class="font-bold text-gray-800">${app.name} (${app.phone})</h5>
+                                    <p class="text-xs text-scoutNavy font-semibold">BSID: <span class="text-scoutGreen font-bold">${app.bsid || 'দেওয়া হয়নি'}</span></p>
+                                    <p class="text-xs text-gray-600">পিতা: ${app.father} | মাতা: ${app.mother}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="approveApp('${k}')" class="bg-scoutGreen text-white text-xs px-3 py-1.5 rounded font-bold"><i class="fa-solid fa-check mr-1"></i> Approve</button>
+                                <button onclick="printForm('${k}')" class="bg-scoutNavy text-white text-xs px-3 py-1.5 rounded font-bold">Print</button>
+                                <button onclick="deleteApp('${k}')" class="bg-red-600 text-white text-xs px-3 py-1.5 rounded font-bold">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
-            // Gallery Admin Grid
-            document.getElementById('adminGalleryGrid').innerHTML = (appData.gallery || []).map((g, idx) => {
-                const imgSrc = typeof g === 'string' ? g : g.img;
-                const captionText = typeof g === 'string' ? 'ক্যাপশন নেই' : (g.caption || 'ক্যাপশন নেই');
+            // Gallery Admin List
+            const galKeys = Object.keys(appData.gallery);
+            document.getElementById('adminGalleryGrid').innerHTML = galKeys.map(k => {
+                const g = appData.gallery[k];
                 return `
                     <div class="relative rounded-xl overflow-hidden border bg-white shadow-sm flex flex-col">
-                        <img src="${imgSrc}" class="w-full h-32 object-cover">
+                        <img src="${g.img}" class="w-full h-32 object-cover">
                         <div class="p-2 flex-grow flex items-center justify-between bg-gray-50">
-                            <p class="text-xs font-semibold text-gray-700 truncate">${captionText}</p>
-                            <button onclick="removeGalleryImage(${idx})" class="text-red-600 hover:text-red-800 text-xs font-bold shrink-0 ml-1"><i class="fa-solid fa-trash"></i></button>
+                            <p class="text-xs font-semibold text-gray-700 truncate">${g.caption || 'ক্যাপশন নেই'}</p>
+                            <button onclick="removeGalleryImage('${k}')" class="text-red-600 hover:text-red-800 text-xs font-bold shrink-0 ml-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
             }).join('');
 
             // Leaders Admin List
-            document.getElementById('adminLeadersList').innerHTML = (appData.leaders || []).map((l, idx) => `
-                <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
-                    <div class="flex items-center gap-3">
-                        <img src="${l.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border border-scoutGreen">
-                        <div>
-                            <p class="font-bold text-sm text-gray-800">${l.name}</p>
-                            <p class="text-xs text-scoutGreen font-semibold">${l.role} | 📞 ${l.phone}</p>
+            const leaderKeys = Object.keys(appData.leaders);
+            document.getElementById('adminLeadersList').innerHTML = leaderKeys.map(k => {
+                const l = appData.leaders[k];
+                return `
+                    <div class="p-3 flex items-center justify-between border-b last:border-0 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <img src="${l.photo || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover border border-scoutGreen">
+                            <div>
+                                <p class="font-bold text-sm text-gray-800">${l.name}</p>
+                                <p class="text-xs text-scoutGreen font-semibold">${l.role} | 📞 ${l.phone}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editLeader('${k}')" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
+                            <button onclick="removeLeader('${k}')" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
                         </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="editLeader(${idx})" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-pen"></i> এডিট</button>
-                        <button onclick="removeLeader(${idx})" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded font-bold"><i class="fa-solid fa-trash"></i> বাদ দিন</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        async function saveMember() {
-            const idx = parseInt(document.getElementById('editMemberIndex').value);
-            const name = document.getElementById('mName').value.trim();
-            const rank = document.getElementById('mRank').value.trim();
-            const bsid = document.getElementById('mBsid').value.trim();
-            const photoFile = document.getElementById('mPhotoFile').files;
+        // Auto Member Approval Logic (Directly transfers Name, Photo & BSID)
+        async function approveApp(key) {
+            const app = appData.applications[key];
+            let bsid = app.bsid || '';
 
-            if (!name || !rank) {
-                alert("দয়া করে মেম্বারের নাম এবং পদবি লিখুন!");
-                return;
+            if (!bsid) {
+                const inputBsid = prompt("আবেদনকারী ফর্ম-এ BSID দেননি। অনুগ্রহ করে নির্ধারণ করুন:", "BX-" + Math.floor(10000 + Math.random() * 90000));
+                if (inputBsid) {
+                    bsid = inputBsid.toUpperCase().startsWith('BX-') ? inputBsid : 'BX-' + inputBsid;
+                } else {
+                    return;
+                }
             }
 
-            if (!appData.members) appData.members = [];
-
-            let photo = idx >= 0 ? appData.members[idx].photo : "https://via.placeholder.com/150";
-            if (photoFile.length > 0) {
-                photo = await readFileAsBase64(photoFile[0]);
-            }
-
-            const memberObj = {
-                id: idx >= 0 ? appData.members[idx].id : Date.now(),
-                name, rank, bsid, photo
+            const targetKey = Date.now();
+            const mObj = {
+                name: app.name,
+                rank: "স্কাউট সদস্য",
+                bsid: bsid,
+                photo: app.photo
             };
 
-            if (idx >= 0) {
-                appData.members[idx] = memberObj;
-            } else {
-                appData.members.push(memberObj);
-            }
+            await fetch(`${FIREBASE_BASE_URL}/members/${targetKey}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(mObj)
+            });
 
-            await saveData();
+            await fetch(`${FIREBASE_BASE_URL}/applications/${key}.json`, { method: 'DELETE' });
+
+            appData.members[targetKey] = mObj;
+            delete appData.applications[key];
+
             renderUI();
             populateAdminData();
-            resetMemberForm();
-            alert("সদস্য তথ্য ফায়ারবেসে সফলভাবে সেভ করা হয়েছে!");
+            alert(`আবেদন অনুমোদন করা হয়েছে! ${app.name} সদস্য তালিকায় সফলভাবে যুক্ত হয়েছে (BSID: ${bsid})`);
         }
 
-        function editMember(idx) {
-            const m = appData.members[idx];
-            document.getElementById('editMemberIndex').value = idx;
-            document.getElementById('mName').value = m.name;
-            document.getElementById('mRank').value = m.rank;
-            document.getElementById('mBsid').value = m.bsid || '';
-            document.getElementById('memberFormTitle').innerText = "মেম্বারের তথ্য আপডেট করুন (" + m.name + ")";
-        }
-
-        function resetMemberForm() {
-            document.getElementById('editMemberIndex').value = "-1";
-            document.getElementById('mName').value = "";
-            document.getElementById('mRank').value = "";
-            document.getElementById('mBsid').value = "";
-            document.getElementById('mPhotoFile').value = "";
-            document.getElementById('memberFormTitle').innerText = "নতুন সদস্য যোগ করুন / তথ্য আপডেট করুন";
-        }
-
-        async function removeMember(idx) {
-            if (confirm("এই সদস্যকে মেম্বার তালিকা থেকে বাদ দিতে চান?")) {
-                appData.members.splice(idx, 1);
-                await saveData();
-                renderUI();
-                populateAdminData();
-            }
-        }
-
-        // --- Achievements & Awards CRUD Operations ---
-        async function saveAchievement() {
-            const idx = parseInt(document.getElementById('editAchievementIndex').value);
-            const recipient = document.getElementById('aRecipient').value.trim();
-            const title = document.getElementById('aTitle').value.trim();
-            const year = document.getElementById('aYear').value.trim();
-            const photoFile = document.getElementById('aPhotoFile').files;
-
-            if (!recipient || !title || !year) {
-                alert("দয়া করে স্কাউটের নাম, অর্জনের নাম এবং প্রাপ্তির বছর দিন!");
-                return;
-            }
-
-            if (!appData.achievements) appData.achievements = [];
-
-            let photo = idx >= 0 ? appData.achievements[idx].photo : "https://via.placeholder.com/150";
-            if (photoFile.length > 0) {
-                photo = await readFileAsBase64(photoFile[0]);
-            }
-
-            const achObj = { recipient, title, year, photo };
-
-            if (idx >= 0) {
-                appData.achievements[idx] = achObj;
-            } else {
-                appData.achievements.push(achObj);
-            }
-
-            await saveData();
-            renderUI();
-            populateAdminData();
-            resetAchievementForm();
-            alert("অর্জন ও পদকের তথ্য ফায়ারবেসে সফলভাবে সেভ করা হয়েছে!");
-        }
-
-        function editAchievement(idx) {
-            const a = appData.achievements[idx];
-            document.getElementById('editAchievementIndex').value = idx;
-            document.getElementById('aRecipient').value = a.recipient;
-            document.getElementById('aTitle').value = a.title;
-            document.getElementById('aYear').value = a.year;
-            document.getElementById('achievementFormTitle').innerText = "অর্জন ও পদকের তথ্য আপডেট করুন (" + a.title + ")";
-        }
-
-        function resetAchievementForm() {
-            document.getElementById('editAchievementIndex').value = "-1";
-            document.getElementById('aRecipient').value = "";
-            document.getElementById('aTitle').value = "";
-            document.getElementById('aYear').value = "";
-            document.getElementById('aPhotoFile').value = "";
-            document.getElementById('achievementFormTitle').innerText = "নতুন অর্জন / পদকপ্রাপ্তির তথ্য যোগ বা আপডেট করুন";
-        }
-
-        async function removeAchievement(idx) {
-            if (confirm("এই অর্জনের তথ্য ডিলিট করতে চান?")) {
-                appData.achievements.splice(idx, 1);
-                await saveData();
-                renderUI();
-                populateAdminData();
-            }
-        }
-
-        // --- Senior Leaders CRUD Operations ---
-        async function saveLeader() {
-            const idx = parseInt(document.getElementById('editLeaderIndex').value);
-            const name = document.getElementById('lName').value.trim();
-            const role = document.getElementById('lRole').value.trim();
-            const phone = document.getElementById('lPhone').value.trim();
-            const photoFile = document.getElementById('lPhotoFile').files;
-
-            if (!name || !role || !phone) {
-                alert("দয়া করে লিডারের নাম, পদবি এবং ফোন নম্বর দিন!");
-                return;
-            }
-
-            if (!appData.leaders) appData.leaders = [];
-
-            let photo = idx >= 0 ? appData.leaders[idx].photo : "https://via.placeholder.com/150";
-            if (photoFile.length > 0) {
-                photo = await readFileAsBase64(photoFile[0]);
-            }
-
-            const leaderObj = { name, role, phone, photo };
-
-            if (idx >= 0) {
-                appData.leaders[idx] = leaderObj;
-            } else {
-                appData.leaders.push(leaderObj);
-            }
-
-            await saveData();
-            renderUI();
-            populateAdminData();
-            resetLeaderForm();
-            alert("সিনিয়র লিডারের তথ্য ফায়ারবেসে সফলভাবে সেভ হয়েছে!");
-        }
-
-        function editLeader(idx) {
-            const l = appData.leaders[idx];
-            document.getElementById('editLeaderIndex').value = idx;
-            document.getElementById('lName').value = l.name;
-            document.getElementById('lRole').value = l.role;
-            document.getElementById('lPhone').value = l.phone;
-            document.getElementById('leaderFormTitle').innerText = "লিডারের তথ্য আপডেট করুন (" + l.name + ")";
-        }
-
-        function resetLeaderForm() {
-            document.getElementById('editLeaderIndex').value = "-1";
-            document.getElementById('lName').value = "";
-            document.getElementById('lRole').value = "";
-            document.getElementById('lPhone').value = "";
-            document.getElementById('lPhotoFile').value = "";
-            document.getElementById('leaderFormTitle').innerText = "সিনিয়র লিডার / উচ্চপদস্থ কর্মকর্তা যোগ বা আপডেট করুন";
-        }
-
-        async function removeLeader(idx) {
-            if (confirm("এই লিডারকে তালিকা থেকে বাদ দিতে চান?")) {
-                appData.leaders.splice(idx, 1);
-                await saveData();
-                renderUI();
-                populateAdminData();
-            }
-        }
-
-        async function saveBranding() {
-            appData.title = document.getElementById('inputHeroTitle').value;
-            appData.motto = document.getElementById('inputMotto').value;
-            appData.notice = document.getElementById('inputNotice').value;
-            appData.showNotice = document.getElementById('toggleNoticeShow').checked;
-            await saveData();
-            renderUI();
-            alert("ব্র্যান্ডিং ফায়ারবেসে সেভ হয়েছে!");
-        }
-
-        async function uploadImage(input, target) {
-            if (input.files.length > 0) {
-                appData[target] = await readFileAsBase64(input.files[0]);
-                await saveData();
-                renderUI();
-                alert("ছবি আপলোড সম্পন্ন!");
-            }
-        }
-
-        async function addGalleryImage() {
-            const input = document.getElementById('galleryFileInput');
-            const captionInput = document.getElementById('galleryCaptionInput');
-
-            if (input.files.length === 0) {
-                alert("দয়া করে একটি ছবি সিলেক্ট করুন!");
-                return;
-            }
-
-            const img = await readFileAsBase64(input.files[0]);
-            const caption = captionInput.value.trim() || "অ্যাক্টিভিটি প্রোগ্রাম";
-
-            if (!appData.gallery) appData.gallery = [];
-            appData.gallery.push({ img, caption });
-
-            await saveData();
-            renderUI();
-            populateAdminData();
-
-            input.value = '';
-            captionInput.value = '';
-            alert("ক্যাপশন সহ নতুন ছবি ফায়ারবেস গ্যালারিতে যোগ হয়েছে!");
-        }
-
-        async function removeGalleryImage(idx) {
-            appData.gallery.splice(idx, 1);
-            await saveData();
-            renderUI();
-            populateAdminData();
-        }
-
-        async function approveApp(idx) {
-            const app = appData.applications[idx];
-            const bsid = prompt("বিএসআইডি (BSID) নির্ধারণ করুন:", "BSID-" + Math.floor(10000 + Math.random() * 90000));
-            if (bsid) {
-                if (!appData.members) appData.members = [];
-                appData.members.push({
-                    id: Date.now(),
-                    name: app.name,
-                    rank: "স্কাউট সদস্য",
-                    bsid: bsid,
-                    photo: app.photo
-                });
-                appData.applications.splice(idx, 1);
-                await saveData();
-                renderUI();
-                populateAdminData();
-                alert("আবেদন অনুমোদন করা হয়েছে!");
-            }
-        }
-
-        async function deleteApp(idx) {
+        async function deleteApp(key) {
             if (confirm("আবেদনটি ডিলিট করবেন?")) {
-                appData.applications.splice(idx, 1);
-                await saveData();
+                await fetch(`${FIREBASE_BASE_URL}/applications/${key}.json`, { method: 'DELETE' });
+                delete appData.applications[key];
                 renderUI();
                 populateAdminData();
             }
         }
 
-        function printForm(idx) {
-            const app = appData.applications[idx];
+        function printForm(key) {
+            const app = appData.applications[key];
             document.getElementById('printDetails').innerHTML = `
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <p><strong>আবেদনকারী:</strong> ${app.name}</p>
                         <p><strong>ফোন:</strong> ${app.phone}</p>
+                        <p><strong>BS ID:</strong> ${app.bsid || 'প্রযোজ্য নয়'}</p>
                         <p><strong>পিতা:</strong> ${app.father}</p>
                         <p><strong>মাতা:</strong> ${app.mother}</p>
                         <p><strong>জন্ম তারিখ:</strong> ${app.dob}</p>
