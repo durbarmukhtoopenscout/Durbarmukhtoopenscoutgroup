@@ -117,7 +117,7 @@
                     <div class="space-y-4">
                         <h4 class="text-xl font-bold text-gray-800">দূর্বার মুক্ত স্কাউট দলের মূল লক্ষ্য</h4>
                         <p id="aboutStory" class="text-gray-600 leading-relaxed">
-                            দূর্বার মুক্ত স্কাউট দল, বড়লেখা, মৌলভীবাজার এলাকার যুবসমাজকে স্কাউট আন্দোলনের মাধ্যমে একজন সৎ, সুশৃঙ্খল ও আত্মনির্ভরশীল সদস্য হিসেবে গড়ে তুলতে নিরলসভাবে কাজ করে যাচ্ছে।
+                            দূর্বার মুক্ত দল, বড়লেখা, মৌলভীবাজার এলাকার যুবসমাজকে স্কাউট আন্দোলনের মাধ্যমে একজন সৎ, সুশৃঙ্খল ও আত্মনির্ভরশীল সদস্য হিসেবে গড়ে তুলতে নিরলসভাবে কাজ করে যাচ্ছে।
                         </p>
                         <div class="bg-green-50 border-l-4 border-scoutGreen p-4 rounded shadow-sm">
                             <h5 class="font-bold text-scoutGreen mb-1">স্কাউট প্রতিজ্ঞা:</h5>
@@ -212,6 +212,16 @@
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">শিক্ষাপ্রতিষ্ঠান / পেশা *</label>
                             <input type="text" id="applicantInstitute" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
                         </div>
+                    </div>
+
+                    <!-- BS ID Field with BX- Prefix -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">বাংলাদেশ স্কাউটস আইডি - BS ID (যদি থাকে)</label>
+                        <div class="flex items-center">
+                            <span class="bg-gray-100 border border-r-0 rounded-l-lg p-2.5 text-sm text-gray-600 font-bold select-none">BX-</span>
+                            <input type="text" id="applicantBsidNum" placeholder="যেমন: 12345" class="w-full border rounded-r-lg p-2.5 text-sm focus:ring-2 focus:ring-scoutGreen outline-none">
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-1">BS ID থাকলে নম্বরটি লিখুন। না থাকলে ফাঁকা রাখুন।</p>
                     </div>
 
                     <div>
@@ -359,7 +369,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">বিএসআইডি (BSID)</label>
-                                <input type="text" id="mBsid" placeholder="BSID-XXXXX" class="w-full border rounded-lg p-2 text-sm">
+                                <input type="text" id="mBsid" placeholder="BX-XXXXX" class="w-full border rounded-lg p-2 text-sm">
                             </div>
                         </div>
                         <div>
@@ -509,8 +519,8 @@
             showNotice: true,
             story: "দূর্বার মুক্ত স্কাউট দল, বড়লেখা, মৌলভীবাজার এলাকার যুবসমাজকে স্কাউট আন্দোলনের মাধ্যমে একজন সৎ, সুশৃঙ্খল ও আত্মনির্ভরশীল সদস্য হিসেবে গড়ে তুলতে নিরলসভাবে কাজ করে যাচ্ছে।",
             members: [
-                { id: 1, name: "সুলতান সাইফ নিরব", rank: "স্কাউট লিডার", bsid: "BSID-99201", photo: "https://via.placeholder.com/150?text=Nirob" },
-                { id: 2, name: "দেবজ্যোতি দাস পদ্ম", rank: "সহকারী স্কাউট লিডার", bsid: "BSID-99202", photo: "https://via.placeholder.com/150?text=Paddo" }
+                { id: 1, name: "সুলতান সাইফ নিরব", rank: "স্কাউট লিডার", bsid: "BX-99201", photo: "https://via.placeholder.com/150?text=Nirob" },
+                { id: 2, name: "দেবজ্যোতি দাস পদ্ম", rank: "সহকারী স্কাউট লিডার", bsid: "BX-99202", photo: "https://via.placeholder.com/150?text=Paddo" }
             ],
             achievements: [
                 { recipient: "সুলতান সাইফ নিরব", title: "প্রেসিডেন্ট স্কাউট অ্যাওয়ার্ড (PS Award)", year: "২০২৫", photo: "https://via.placeholder.com/150?text=PS+Award" }
@@ -660,6 +670,12 @@
                 photo = await readFileAsBase64(fileInput.files[0]);
             }
 
+            let rawBsid = document.getElementById('applicantBsidNum').value.trim();
+            let finalBsid = "";
+            if (rawBsid !== "") {
+                finalBsid = rawBsid.toUpperCase().startsWith('BX-') ? rawBsid : 'BX-' + rawBsid;
+            }
+
             const appPayload = {
                 id: Date.now(),
                 name: document.getElementById('applicantName').value,
@@ -669,6 +685,7 @@
                 dob: document.getElementById('applicantDob').value,
                 institute: document.getElementById('applicantInstitute').value,
                 address: document.getElementById('applicantAddress').value,
+                bsid: finalBsid,
                 photo: photo,
                 date: new Date().toLocaleDateString('bn-BD')
             };
@@ -680,7 +697,7 @@
                     body: JSON.stringify({
                         access_key: WEB3FORMS_KEY,
                         subject: `নতুন স্কাউট আবেদন: ${appPayload.name}`,
-                        message: `নাম: ${appPayload.name}, ফোন: ${appPayload.phone}, ঠিকানা: ${appPayload.address}`
+                        message: `নাম: ${appPayload.name}, ফোন: ${appPayload.phone}, BSID: ${appPayload.bsid || 'নেই'}, ঠিকানা: ${appPayload.address}`
                     })
                 });
             } catch (err) {}
@@ -782,6 +799,7 @@
                             <img src="${app.photo}" class="w-16 h-16 rounded object-cover border">
                             <div class="text-sm">
                                 <h5 class="font-bold text-gray-800">${app.name} (${app.phone})</h5>
+                                <p class="text-xs text-scoutNavy font-semibold">BSID: <span class="text-scoutGreen font-bold">${app.bsid || 'দেওয়া হয়নি'}</span></p>
                                 <p class="text-xs text-gray-600">পিতা: ${app.father} | মাতা: ${app.mother}</p>
                             </div>
                         </div>
@@ -1067,22 +1085,30 @@
 
         async function approveApp(idx) {
             const app = appData.applications[idx];
-            const bsid = prompt("বিএসআইডি (BSID) নির্ধারণ করুন:", "BSID-" + Math.floor(10000 + Math.random() * 90000));
-            if (bsid) {
-                if (!appData.members) appData.members = [];
-                appData.members.push({
-                    id: Date.now(),
-                    name: app.name,
-                    rank: "স্কাউট সদস্য",
-                    bsid: bsid,
-                    photo: app.photo
-                });
-                appData.applications.splice(idx, 1);
-                await saveData();
-                renderUI();
-                populateAdminData();
-                alert("আবেদন অনুমোদন করা হয়েছে!");
+            let bsid = app.bsid || '';
+
+            if (!bsid) {
+                const inputBsid = prompt("আবেদনকারী ফর্ম-এ BSID দেননি। অনুগ্রহ করে নির্ধারণ করুন:", "BX-" + Math.floor(10000 + Math.random() * 90000));
+                if (inputBsid) {
+                    bsid = inputBsid.toUpperCase().startsWith('BX-') ? inputBsid : 'BX-' + inputBsid;
+                } else {
+                    return;
+                }
             }
+
+            if (!appData.members) appData.members = [];
+            appData.members.push({
+                id: Date.now(),
+                name: app.name,
+                rank: "স্কাউট সদস্য",
+                bsid: bsid,
+                photo: app.photo
+            });
+            appData.applications.splice(idx, 1);
+            await saveData();
+            renderUI();
+            populateAdminData();
+            alert(`আবেদন অনুমোদন করা হয়েছে! ${app.name} সদস্য তালিকায় যুক্ত হয়েছে (BSID: ${bsid})`);
         }
 
         async function deleteApp(idx) {
@@ -1101,6 +1127,7 @@
                     <div>
                         <p><strong>আবেদনকারী:</strong> ${app.name}</p>
                         <p><strong>ফোন:</strong> ${app.phone}</p>
+                        <p><strong>BS ID:</strong> ${app.bsid || 'প্রযোজ্য নয়'}</p>
                         <p><strong>পিতা:</strong> ${app.father}</p>
                         <p><strong>মাতা:</strong> ${app.mother}</p>
                         <p><strong>জন্ম তারিখ:</strong> ${app.dob}</p>
