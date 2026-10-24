@@ -40,10 +40,10 @@
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-    <!-- Fast Loading Overlay -->
+    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 bg-white/95 z-50 flex items-center justify-center flex-col gap-3 transition-opacity duration-300">
         <div class="w-12 h-12 border-4 border-scoutGreen border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ক্লাউড ডাটাবেজ থেকে তথ্য দ্রুত লোড হচ্ছে...</p>
+        <p class="text-scoutGreen font-semibold text-lg">দূর্বার ক্লাউড ডাটাবেজ থেকে তথ্য লোড হচ্ছে...</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -214,7 +214,6 @@
                         </div>
                     </div>
 
-                    <!-- BS ID Field with BX- Prefix -->
                     <div>
                         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">বাংলাদেশ স্কাউটস আইডি - BS ID (যদি থাকে)</label>
                         <div class="flex items-center">
@@ -501,7 +500,7 @@
         <div id="printDetails" class="space-y-3 text-base"></div>
     </div>
 
-    <!-- Fast Database Architecture Script -->
+    <!-- Script Architecture Engine -->
     <script>
         const WEB3FORMS_KEY = "eb7c98e5-b960-460f-9315-c1b6aa8385f2";
         const ADMIN_PASS = "durbar123";
@@ -524,7 +523,7 @@
             leaders: {}
         };
 
-        // Fast Parallel Loader
+        // Fast Parallel Data Loader
         async function loadData() {
             try {
                 const response = await fetch(`${FIREBASE_BASE_URL}/.json`);
@@ -550,7 +549,7 @@
         function renderUI() {
             const b = appData.branding || {};
             
-            // Fixed Undefined Fallback Bug
+            // Fixed Undefined Display Bug
             const titleText = b.title || "দূর্বার মুক্ত স্কাউট দল, বড়লেখা";
             const subtitleText = b.subtitle || "বড়লেখা, মৌলভীবাজার";
             const logoSrc = b.logo || "https://via.placeholder.com/150?text=Logo";
@@ -689,7 +688,7 @@
                 renderUI();
                 populateAdminData();
                 resetMemberForm();
-                alert("সদস্য তথ্য ফায়ারবেসে ইনস্ট্যান্ট সেভ হয়েছে!");
+                alert("সদস্য তথ্য ফায়ারবেসে সেভ হয়েছে!");
             } catch(e) {
                 alert("সেভ করতে সমস্যা হয়েছে, আবার চেষ্টা করুন!");
             } finally {
@@ -760,7 +759,7 @@
                 renderUI();
                 populateAdminData();
                 resetAchievementForm();
-                alert("অর্জন ও পদকের তথ্য ইনস্ট্যান্ট সেভ হয়েছে!");
+                alert("অর্জন ও পদকের তথ্য সেভ হয়েছে!");
             } catch(e) {
                 alert("সেভ হতে ব্যর্থ হয়েছে!");
             } finally {
@@ -886,7 +885,7 @@
 
             appData.branding = branding;
             renderUI();
-            alert("ব্র্যান্ডিং ইনস্ট্যান্ট সেভ হয়েছে!");
+            alert("ব্র্যান্ডিং সেভ হয়েছে!");
         }
 
         async function uploadImage(input, target) {
@@ -939,7 +938,7 @@
             populateAdminData();
         }
 
-        // Online Application Submit Logic (Includes BS ID BX- Processing)
+        // Online Application Submit Logic (BS ID BX- Processing)
         async function submitApplication(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -1145,7 +1144,7 @@
             }).join('');
         }
 
-        // Auto Member Approval Logic (Directly transfers Name, Photo & BSID)
+        // Auto Member Approval Logic (Transfer Name, Photo & BSID)
         async function approveApp(key) {
             const app = appData.applications[key];
             let bsid = app.bsid || '';
@@ -1180,7 +1179,7 @@
 
             renderUI();
             populateAdminData();
-            alert(`আবেদন অনুমোদন করা হয়েছে! ${app.name} সদস্য তালিকায় সফলভাবে যুক্ত হয়েছে (BSID: ${bsid})`);
+            alert(`আবেদন অনুমোদন করা হয়েছে! ${app.name} সদস্য তালিকায় যুক্ত হয়েছে (BSID: ${bsid})`);
         }
 
         async function deleteApp(key) {
